@@ -1,0 +1,64 @@
+﻿@model Web.Models.Home.LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta icon="" />
+    <title>GlaucoT</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="shortcut icon" href="/images/glaucot.png" type="image/x-icon" />
+    @*<link rel="stylesheet" href="~/Web.styles.css" asp-append-version="true" />*@
+</head>
+<body>
+    <div class="form-body without-side" style="background-color: #2e5894;">
+        <div class="website-logo w-100 text-center mt-2" style="position:unset;">
+            <a href="/">
+                <div class="logo">
+                    <img class="" src="/images/glaucot.png" alt="">
+                </div>
+            </a>
+        </div>
+        <div class="d-block">
+            @*<div class="img-holder">
+                <div class="bg"></div>
+                <div class="info-holder">
+                    <img src="/images/graphic8.svg" alt="">
+                </div>
+            </div>*@
+            <div class="form-holder">
+                <div class="form-content" style="padding: 10px 20px 50px;">
+                    <div class="form-items" style="padding: 35px 25px;">
+                        @*<div class="form-icon">
+                            <div class="icon-holder"><img src="/images/glaucot.png" alt=""></div>
+                        </div>*@
+                        <h3 class="form-title-center">Sign in</h3>
+                        <form method="post" asp-controller="Home" asp-action="Index">
+                            <input class="form-control" type="text" asp-for="Email" placeholder="E-mail Address" required>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <input class="form-control mt-3" type="password" asp-for="Password" placeholder="Password" required>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <div class="form-button">
+                                <button id="submit" type="submit" class="ibtn ibtn-full">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
