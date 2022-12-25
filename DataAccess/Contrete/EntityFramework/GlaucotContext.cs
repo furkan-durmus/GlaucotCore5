@@ -13,7 +13,7 @@ namespace DataAccess.Contrete.EntityFramework
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(SelectedDatabase.LiveServerTest);
+            optionsBuilder.UseSqlServer(SelectedDatabase.LiveServerReal);
         }
 
         public DbSet<Doctor> Doctors { get; set; }

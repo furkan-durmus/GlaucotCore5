@@ -12,6 +12,6 @@ namespace Core
 
         public const string LiveServerTest = @"Server=rd-minio-win.guzelhosting.com\MSSQLSERVER2019;Database=tuncayal_GLOTEST;User Id=tuncayal_furkan;password=Ankara06-;TrustServerCertificate=True;";
 
-        public const string LiveServerReal = "NOT CREATED YET";
+        public const string LiveServerReal = @"Server=P3NWPLSK12SQL-v13.shr.prod.phx3.secureserver.net;Database=glaucotV1;User Id=glaucotMssql;password=mssqlGlaucot16?-;TrustServerCertificate=True;";
     }
 }
