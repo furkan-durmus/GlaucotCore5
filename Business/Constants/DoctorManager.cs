@@ -67,7 +67,7 @@ namespace Business.Constants
                 DoctorName = "GlaucoT",
                 DoctorLastName = "GlaucoT",
                 SecurityStamp = securityStamp,
-                IsApproved = true
+                IsApproved = false
             };
             _doctorDal.Add(doctor);
         }
