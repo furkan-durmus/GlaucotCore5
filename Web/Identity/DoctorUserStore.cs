@@ -127,7 +127,10 @@ namespace Web.Identity
                 DoctorEmail = user.DoctorEmail,
                 SecurityStamp = user.SecurityStamp,
                 DoctorId = user.DoctorId,
-                DoctorPassword = user.PasswordHashed
+                DoctorPassword = user.PasswordHashed,
+                IsApproved = true,
+                DoctorName = "GlaucoT",
+                DoctorLastName = "GlaucoT"
             });
 
             return IdentityResult.Success;
