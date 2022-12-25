@@ -69,8 +69,6 @@ namespace Web
 
             #endregion
 
-
-
             services.AddSingleton<IDoctorService, DoctorManager>();
             services.AddSingleton<IDoctorDal, EFDoctorDal>();
 
@@ -119,7 +117,7 @@ namespace Web
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -100,18 +100,16 @@ namespace Web.Controllers
             return Redirect("/");
         }
 
-
-
-        public IActionResult KayitOl()
+        public IActionResult Register()
         {
-            //if (User.Identity.IsAuthenticated)
-            //    return Redirect("/Doctor/Index");
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index","Doctor");
 
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> KayitOl(RegisterAccountViewModel model)
+        public async Task<IActionResult> Register(RegisterAccountViewModel model)
         {
             if (User.Identity.IsAuthenticated)
                 return Redirect("/");
@@ -138,10 +136,5 @@ namespace Web.Controllers
 
             return Redirect("/");
         }
-
-
-
-
-
     }
 }

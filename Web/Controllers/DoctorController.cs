@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Web.Controllers
 {
     [Authorize(Roles = "Doctor")]
-    public class DoctorController : Controller
+    public class DoctorController : BaseController
     {
         // GET: /<controller>/
         public IActionResult Index()
