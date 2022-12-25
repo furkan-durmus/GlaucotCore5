@@ -18,10 +18,8 @@ namespace Web.Controllers
     public class DoctorController : BaseController
     {
         private readonly UserManager<DoctorUser> _userManager;
-        private readonly SignInManager<DoctorUser> _signInManager;
-        public DoctorController(SignInManager<DoctorUser> signInManager = null, UserManager<DoctorUser> userManager = null)
+        public DoctorController(UserManager<DoctorUser> userManager = null)
         {
-            _signInManager = signInManager;
             _userManager = userManager;
         }
         // GET: /<controller>/
