@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Business.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,11 @@ namespace Web.Controllers
     public class DoctorController : BaseController
     {
         private readonly UserManager<DoctorUser> _userManager;
-        public DoctorController(UserManager<DoctorUser> userManager = null)
+        private readonly IMedicineService _medicineService;
+        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null)
         {
             _userManager = userManager;
+            _medicineService = medicineService;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -55,6 +58,32 @@ namespace Web.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult AddMedicine()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddMedicine(DoctorAddMedicineViewModel model)
+        {
+            try
+            {
+                _medicineService.Add(new Entities.Concrete.Medicine { MedicineName = model.MedicineName });
+                ViewBag.Result = "success";
+            }
+            catch (Exception)
+            {
+                ViewBag.Result = "fail";
+            }
+
+            return View();
+        }
+
+        public IActionResult Patients()
+        {
+            return View();
         }
     }
 }
