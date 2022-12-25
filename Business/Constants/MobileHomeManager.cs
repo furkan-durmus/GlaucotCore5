@@ -59,6 +59,7 @@ namespace Business.Constants
                 userGeneralData.PatientGender = patientData.PatientGender;
                 userGeneralData.PatientPhoneNumber = patientData.PatientPhoneNumber;
                 userGeneralData.PatientPhotoPath = patientData.PatientPhotoPath;
+                userGeneralData.PatientNotificationToken = patientData.PatientNotificationToken;
                 userGeneralData.IsUserActive = patientData.IsUserActive;
                 userGeneralData.IsGlassActive = patientGlassData != null ? patientGlassData.IsActive : false;
 
@@ -73,5 +74,9 @@ namespace Business.Constants
             return _medicineRecordDal.GetAll(m => m.PatientId == patientId).ToList();
         }
 
+        public void UpdatePatientNotificationToken(GeneralMobilePatientRequest patient)
+        {
+            _patientDal.UpdatePatientNotificationToken(patient);
+        }
     }
 }

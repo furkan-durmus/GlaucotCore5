@@ -38,7 +38,7 @@ namespace Web.Controllers
 
             if (!_registerService.CheckKeyIsValid(registerPatient))
             {
-                return Ok(new { status = -99,message = $"Yetkisiz İşlem!" });
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
             }
 
             if (!_otpService.CheckOTP(registerPatient))
@@ -68,7 +68,7 @@ namespace Web.Controllers
             patient.IsUserActive = true;
 
             _patientService.Add(patient);
-            return Ok(new { message = patient.PatientId , status = 1 });
+            return Ok(new { message = patient.PatientId, status = 1 });
         }
 
 
@@ -84,8 +84,8 @@ namespace Web.Controllers
             if (!_loginService.CheckLoginIsValid(loginPatient))
             {
                 return Ok(new { status = 0, message = $"Telefon numarası veya Şifre hatalı." });
-            }           
-            return Ok(new { status = 1 , message = _loginService.ResponsePatientId(loginPatient).PatientId });
+            }
+            return Ok(new { status = 1, message = _loginService.ResponsePatientId(loginPatient).PatientId });
         }
 
         [HttpPost("home")]
@@ -94,12 +94,14 @@ namespace Web.Controllers
 
             if (!_mobileHomeService.CheckKeyIsValid(patient.PatientId, patient.SecretKey))
             {
-                return Ok(new { status = -99 , message = $"Yetkisiz İşlem!"});
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
             }
-     
+            if (patient.PatientNotificationToken != null)
+                _mobileHomeService.UpdatePatientNotificationToken(patient);
+
             return Ok(new { status = 1, message = _mobileHomeService.GetAllPatientDataForMobileHome(patient.PatientId) });
-        } 
-        
+        }
+
 
         [HttpPost("getallmedicines")]
         public IActionResult GetAllMedicines(GeneralMobilePatientRequest patient)
@@ -107,11 +109,11 @@ namespace Web.Controllers
 
             if (!_mobileHomeService.CheckKeyIsValid(patient.PatientId, patient.SecretKey))
             {
-                return Ok(new { status = -99 , message = $"Yetkisiz İşlem!"});
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
             }
-     
+
             return Ok(new { status = 1, message = _medicineService.GetAll() });
-        }        
+        }
 
         [HttpPost("addmedicinerecord")]
         public IActionResult AddPatientMedicineRecord(NewPatientMedicineRecord newMedicine)
@@ -119,16 +121,16 @@ namespace Web.Controllers
 
             if (!_mobileHomeService.CheckKeyIsValid(newMedicine.PatientId, newMedicine.SecretKey))
             {
-                return Ok(new { status = -99 , message = $"Yetkisiz İşlem!"});
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
             }
 
             MedicineRecord patientNewMedicineRecord = new();
-            patientNewMedicineRecord.PatientId=newMedicine.PatientId;
-            patientNewMedicineRecord.MedicineId=newMedicine.MedicineId;
+            patientNewMedicineRecord.PatientId = newMedicine.PatientId;
+            patientNewMedicineRecord.MedicineId = newMedicine.MedicineId;
             patientNewMedicineRecord.MedicineUsageRange = newMedicine.MedicineUsageRange;
             patientNewMedicineRecord.MedicineFrequency = newMedicine.MedicineFrequency;
             patientNewMedicineRecord.MedicineUsegeTimeList = newMedicine.MedicineUsegeTimeList;
-            if(newMedicine.MedicineSideEffect !=null)
+            if (newMedicine.MedicineSideEffect != null)
                 patientNewMedicineRecord.MedicineSideEffect = newMedicine.MedicineSideEffect;
 
             int medicineRecordId = _medicineRecordService.Add(patientNewMedicineRecord);
@@ -143,13 +145,13 @@ namespace Web.Controllers
 
             if (!_mobileHomeService.CheckKeyIsValid(newMedicineData.PatientId, newMedicineData.SecretKey))
             {
-                return Ok(new { status = -99 , message = $"Yetkisiz İşlem!"});
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
             }
 
             MedicineRecord patientNewMedicineRecord = new();
             patientNewMedicineRecord.MedicineRecordId = newMedicineData.MedicineRecordId;
-            patientNewMedicineRecord.PatientId= newMedicineData.PatientId;
-            patientNewMedicineRecord.MedicineId= newMedicineData.MedicineId;
+            patientNewMedicineRecord.PatientId = newMedicineData.PatientId;
+            patientNewMedicineRecord.MedicineId = newMedicineData.MedicineId;
             patientNewMedicineRecord.MedicineUsageRange = newMedicineData.MedicineUsageRange;
             patientNewMedicineRecord.MedicineFrequency = newMedicineData.MedicineFrequency;
             patientNewMedicineRecord.MedicineUsegeTimeList = newMedicineData.MedicineUsegeTimeList;
@@ -169,14 +171,14 @@ namespace Web.Controllers
 
             if (!_mobileHomeService.CheckKeyIsValid(MedicineDataForDelete.PatientId, MedicineDataForDelete.SecretKey))
             {
-                return Ok(new { status = -99 , message = $"Yetkisiz İşlem!"});
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
             }
 
             MedicineRecord patientDeleteMedicineRecord = new();
             patientDeleteMedicineRecord.MedicineRecordId = MedicineDataForDelete.MedicineRecordId;
-            patientDeleteMedicineRecord.PatientId= MedicineDataForDelete.PatientId;
-     
- 
+            patientDeleteMedicineRecord.PatientId = MedicineDataForDelete.PatientId;
+
+
 
             _medicineRecordService.Delete(patientDeleteMedicineRecord);
 
@@ -190,13 +192,13 @@ namespace Web.Controllers
 
             if (!_mobileHomeService.CheckKeyIsValid(patient.PatientId, patient.SecretKey))
             {
-                return Ok(new { status = -99 , message = $"Yetkisiz İşlem!"});
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
             }
 
             string response = _glassRecordService.UpdateOrAddGlassRecord(patient.PatientId);
             return Ok(new { status = response.Contains("start") ? 1 : 2, message = response });
         }
-        
+
 
         [HttpPost("sendregistersms")]
         public IActionResult PatientSendOTP(RegisterPatient registerPatient)
@@ -223,7 +225,7 @@ namespace Web.Controllers
             userOTPData.ExpireDate = DateTime.Now.AddMinutes(3);
             _otpService.Create(userOTPData);
 
-            return Ok(new { status = 1,message = $"OTP başarıyla oluşturuldu." });
+            return Ok(new { status = 1, message = $"OTP başarıyla oluşturuldu." });
         }
 
 

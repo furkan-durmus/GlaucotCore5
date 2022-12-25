@@ -11,5 +11,6 @@ namespace Business.Abstract
     {
         bool CheckKeyIsValid(Guid patientId, string key);
         ApiHomePatientData GetAllPatientDataForMobileHome(Guid patientId);
+        void UpdatePatientNotificationToken(GeneralMobilePatientRequest patient);
     }
 }

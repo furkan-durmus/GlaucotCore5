@@ -39,9 +39,9 @@ namespace Business.Constants
             return _medicineRecordDal.GetAll(m => m.PatientId == patientId);
         }
 
-        public List<MedicineRecord> GetAllRecordsAccordingToTime(string time)
+        public List<NotificationMedicine> GetDataForMedicineNotification(string time)
         {
-            return _medicineRecordDal.GetAll(m => m.MedicineUsegeTimeList.Contains(time));
+            return _medicineRecordDal.GetDataForMedicineNotification(time);
         }
 
         public void Update(MedicineRecord medicineRecord)

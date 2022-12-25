@@ -10,5 +10,6 @@ namespace DataAccess.Abstract
 {
     public interface IPatientDal : IEntitiyRepository<Patient>
     {
+        void UpdatePatientNotificationToken(GeneralMobilePatientRequest patient);
     }
 }
