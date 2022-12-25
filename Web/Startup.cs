@@ -106,7 +106,7 @@ namespace Web
             services.AddHangfire(x =>
             {
                 x.UseSqlServerStorage(SelectedDatabase.LiveServerReal);
-                RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "*/1 * * * *");
+                RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "0,30 * * * *");
             });
 
             services.AddHangfireServer();
