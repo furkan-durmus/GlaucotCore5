@@ -64,7 +64,7 @@ namespace Web.Controllers
             patient.PatientGender = 0;
             patient.PatientPhoneNumber = registerPatient.PatientPhoneNumber;
             patient.PatientPassword = registerPatient.PatientPassword;
-            patient.PatientPhotoPath = "https://glaucot.tuncayaltun.com/default.png";
+            patient.PatientPhotoPath = "profilephotos/default.png";
             patient.IsUserActive = true;
 
             _patientService.Add(patient);
