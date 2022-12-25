@@ -122,6 +122,7 @@ namespace Web.Identity
             //    SecurityStamp = user.SecurityStamp,
             //    SifreHashed = user.SifreHashed
             //});
+            var doctorUser = _doctorService.Get(user.DoctorId);
             _doctorService.Update(new Doctor
             {
                 DoctorEmail = user.DoctorEmail,
@@ -129,8 +130,8 @@ namespace Web.Identity
                 DoctorId = user.DoctorId,
                 DoctorPassword = user.PasswordHashed,
                 IsApproved = true,
-                DoctorName = "GlaucoT",
-                DoctorLastName = "GlaucoT"
+                DoctorName = doctorUser.DoctorName,
+                DoctorLastName = doctorUser.DoctorLastName
             });
 
             return IdentityResult.Success;
