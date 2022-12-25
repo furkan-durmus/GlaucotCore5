@@ -10,9 +10,9 @@
     <link rel="shortcut icon" href="/images/glaucot.png" type="image/x-icon" />
     <!-- GOOGLE FONT -->
     @*<link rel="preconnect" href="https://fonts.gstatic.com">*@
-    @*<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">*@
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <!-- BOXICONS -->
-    @*<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>*@
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
 
     <!-- Plugin -->
     <link rel="stylesheet" href="~/protend/css/owl.carousel.min.css">
@@ -40,38 +40,27 @@
         <!-- SIDEBAR MENU -->
         <div class="simlebar-sc" data-simplebar>
             <ul class="sidebar-menu tf">
-                <li class="sidebar-submenu">
-                    <a href="index.html" class="sidebar-menu-dropdown">
+                <li>
+                    <a class="active" href="@Url.Action("Index","Doctor")">
                         <i class='bx bxs-home'></i>
-                        <span>Dashboard</span>
-                        <div class="dropdown-icon">
-                            <i class='bx bx-chevron-down'></i>
-                        </div>
+                        <span>Home</span>
                     </a>
-                    <ul class="sidebar-menu sidebar-menu-dropdown-content">
-                        <li>
-                            <a href="index.html">
-                                Dashboard
-                            </a>
-                        </li>
-                        <li>
-                            <a href="user-profile.html">
-                                User Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a href="user-login.html">
-                                User Login
-                            </a>
-                        </li>
-                        <li>
-                            <a href="new-account.html">
-                                New Account
-                            </a>
-                        </li>
-                    </ul>
                 </li>
-                <li class="sidebar-submenu">
+                <li>
+                    <a href="#">
+                        <i class='bx bxs-capsule'></i>
+                        @*<i class='bx bxs-component'></i>*@
+                        <span>Add Medicine</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class='bx bxs-user'></i>
+                        <span>Patients</span>
+                    </a>
+                </li>
+
+@*                <li class="sidebar-submenu">
                     <a href="project.html" class="sidebar-menu-dropdown">
                         <i class='bx bxs-bolt'></i>
                         <span>Project</span>
@@ -94,71 +83,8 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li>*@
 
-                <li class="sidebar-submenu">
-                    <a href="clients.html" class="sidebar-menu-dropdown">
-                        <i class='bx bxs-user'></i>
-                        <span>Client</span>
-                        <div class="dropdown-icon"><i class='bx bx-chevron-down'></i></div>
-                    </a>
-                    <ul class="sidebar-menu sidebar-menu-dropdown-content">
-                        <li>
-                            <a href="clients.html">
-                                Manager Client
-                            </a>
-                        </li>
-                        <li>
-                            <a href="client-details.html">
-                                Client Details
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="board.html">
-                        <i class='bx bxs-dashboard'></i>
-                        <span>Board</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="calendar.html">
-                        <i class='bx bx-calendar'></i>
-                        <span>Calendar</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="message.html">
-                        <i class='bx bxs-message-rounded-detail'></i>
-                        <span>Message</span>
-                    </a>
-                </li>
-                <li class="sidebar-submenu">
-                    <a href="chart-apex.html" class="sidebar-menu-dropdown">
-                        <i class='bx bxs-component'></i>
-                        <span>Components</span>
-                        <div class="dropdown-icon"><i class='bx bx-chevron-down'></i></div>
-                    </a>
-                    <ul class="sidebar-menu sidebar-menu-dropdown-content">
-                        <li>
-                            <a href="chart-apex.html">
-                                Apex Charts
-                            </a>
-                        </li>
-
-                    </ul>
-                </li>
-                <li>
-                    <a class="darkmode-toggle" id="darkmode-toggle" onclick="switchTheme()">
-                        <div>
-                            <i class='bx bx-cog mr-10'></i>
-                            <span>darkmode</span>
-                        </div>
-
-                        <span class="darkmode-switch"></span>
-                    </a>
-                </li>
             </ul>
         </div>
 
@@ -234,11 +160,11 @@
                     </a>
                 </div>
             </div>-->
-            <div class="dropdown d-none d-lg-inline-block ms-1">
+@*            <div class="dropdown d-none d-lg-inline-block ms-1">
                 <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
                         <i class="bx bx-fullscreen"></i>
                     </button>
-            </div>
+            </div>*@
             <!--<div class="dropdown d-inline-block mt-12">
             <button type="button" class="btn dropdown-toggle" id="page-header-user-dropdown">-->
             @*<img class="rounded-circle header-profile-user" src="./images/profile/profile.png"
@@ -268,7 +194,7 @@
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("ChangePassword","Doctor")">Change Password</a></li>
                     <li><a class="dropdown-item" href="@Url.Action("Logout","Home")">Logout</a></li>
                 </ul>
             </div>
