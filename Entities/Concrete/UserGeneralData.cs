@@ -16,6 +16,7 @@ namespace Entities.Concrete
         public int PatientGender { get; set; }
         public string PatientPhoneNumber { get; set; }
         public string PatientPhotoPath { get; set; }
+        public string PatientNotificationToken { get; set; }
         public bool IsUserActive { get; set; }  
         public bool IsGlassActive { get; set; }  
     }

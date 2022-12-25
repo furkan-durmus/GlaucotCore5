@@ -42,5 +42,23 @@ namespace DataAccess.Contrete.EntityFramework
                         }).ToList();
             }
         }
+
+        public List<NotificationMedicine> GetDataForMedicineNotification(string time)
+        {
+            using (GlaucotContext context = new GlaucotContext())
+            {
+                return (from medicineRecords in context.MedicineRecords
+                        join medicines in context.Medicines on medicineRecords.MedicineId equals medicines.MedicineId
+                        join patients in context.Patients on medicineRecords.PatientId equals patients.PatientId
+                        where medicineRecords.MedicineUsegeTimeList.Contains(time)
+                        select new NotificationMedicine
+                        {
+                            MedicineName = medicines.MedicineName,
+                            PatientNotificationToken = patients.PatientNotificationToken,
+                            CurrentTime=time
+
+                        }).ToList();
+            }
+        }
     }
 }

@@ -1,7 +1,9 @@
 using Business.Abstract;
 using Business.Constants;
+using Core;
 using DataAccess.Abstract;
 using DataAccess.Contrete.EntityFramework;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Web.Identity;
+using Web.Jobs;
 
 namespace Web
 {
@@ -100,6 +103,14 @@ namespace Web
             services.AddSingleton<ILoginService, LoginManager>();
             services.AddSingleton<IMobileHomeService, MobileHomeManager>();
 
+            services.AddHangfire(x =>
+            {
+                x.UseSqlServerStorage(SelectedDatabase.LiveServerReal);
+                RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "*/1 * * * *");
+            });
+
+            services.AddHangfireServer();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -119,6 +130,7 @@ namespace Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseHangfireDashboard();
 
             app.UseEndpoints(endpoints =>
             {

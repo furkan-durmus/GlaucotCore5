@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Business.Constants;
+using DataAccess.Contrete.EntityFramework;
+using System;
+using Web.Jobs;
 
 namespace TestSystem
 {
@@ -6,8 +9,8 @@ namespace TestSystem
     {
         static void Main(string[] args)
         {
-            //var myTest = new SendMedicineNotification(new MedicineRecordManager(new EFMedicineRecordDal()));
-            //myTest.SendNotificationWithOneSignal();
+            var myTest = new SendMedicineNotification(new MedicineRecordManager(new EFMedicineRecordDal()));
+            myTest.SendNotificationWithOneSignal();
 
         }
     }

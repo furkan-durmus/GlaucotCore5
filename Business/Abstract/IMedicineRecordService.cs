@@ -14,7 +14,7 @@ namespace Business.Abstract
         int Add(MedicineRecord medicineRecord);
         void Update(MedicineRecord medicineRecord);
         void Delete(MedicineRecord medicineRecord);
-        List<MedicineRecord> GetAllRecordsAccordingToTime(string time);
+        List<NotificationMedicine> GetDataForMedicineNotification(string time);
 
     }
 }
