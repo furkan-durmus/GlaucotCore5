@@ -38,6 +38,11 @@ namespace Business.Constants
             return _medicineDal.GetAll();
         }
 
+        public List<string> GetAllMedicineName()
+        {
+            return _medicineDal.GetAll().Select(q => q.MedicineName.ToLower()).ToList();
+        }
+
         public void Update(Medicine medicine)
         {
             _medicineDal.Update(medicine);

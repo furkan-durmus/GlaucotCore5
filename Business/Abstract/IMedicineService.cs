@@ -10,6 +10,7 @@ namespace Business.Abstract
     public interface IMedicineService
     {
         List<Medicine> GetAll();
+        List<string> GetAllMedicineName();
         Medicine Get(int medicineId);
         void Add(Medicine medicine);
         void Update(Medicine medicine);

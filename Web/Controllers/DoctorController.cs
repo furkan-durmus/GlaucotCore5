@@ -70,12 +70,20 @@ namespace Web.Controllers
         {
             try
             {
+                var medicines = _medicineService.GetAllMedicineName();
+
+                if (medicines.Contains(model.MedicineName.ToLower()))
+                {
+                    ModelState.AddModelError("MedicineName", "This medicine is already registered");
+                    return View(model);
+                }
+
                 _medicineService.Add(new Entities.Concrete.Medicine { MedicineName = model.MedicineName });
-                ViewBag.Result = "success";
+                TempData["Result"] = "success";
             }
             catch (Exception)
             {
-                ViewBag.Result = "fail";
+                TempData["Result"] = "fail";
             }
 
             return View();
@@ -84,6 +92,12 @@ namespace Web.Controllers
         public IActionResult Patients()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult PatientsHandler()
+        {
+            return Json(new { ok = true });
         }
     }
 }

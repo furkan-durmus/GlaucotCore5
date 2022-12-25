@@ -40,18 +40,20 @@
 }
 
 @section Scripts{
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
             $('.medicine').addClass("active");
-            if(result != null){
+            var result = "@TempData["Result"]";
+            if(result != null && result != "") {
+                console.log(result);
                 if(result == "success") {
                     Swal.fire({
                         position: 'top-center',
                         icon: 'success',
                         title: 'Medicine has been saved',
-                        showConfirmButton: false,
-                        timer: 1500
+                        showConfirmButton: true,
+                        timer: 2500
                     });
                 }
                 else{
@@ -59,7 +61,8 @@
                         position: 'top-center',
                         icon: 'error',
                         title: 'Error',
-                        text: 'Something went wrong!'
+                        text: 'Something went wrong!',
+                        timer: 2500
                     });
                 }
             }

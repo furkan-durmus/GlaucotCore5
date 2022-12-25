@@ -192,7 +192,7 @@
                     <i class='bx bx-chevron-down'></i>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    @*<li><a class="dropdown-item" href="#">Action</a></li>*@
                     <li><a class="dropdown-item" href="@Url.Action("ChangePassword","Doctor")">Change Password</a></li>
                     <li><a class="dropdown-item" href="@Url.Action("Logout","Home")">Logout</a></li>
                 </ul>
@@ -218,21 +218,21 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     @*<script src="./libs/bootstrap/js/bootstrap.min.js"></script>*@
     @*<script src="./libs/jquery/jquery.min.js"></script>*@
-    <script src="~/protend/libs/moment.min.js"></script>
+    @*<script src="~/protend/libs/moment.min.js"></script>*@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @*<script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>*@
-    <script src="~/protend/libs/jquery.peity.min.js"></script>
+@*    <script src="~/protend/libs/jquery.peity.min.js"></script>
     <script src="~/protend/libs/Chart.bundle.min.js"></script>
-    <script src="~/protend/libs/owl.carousel.min.js"></script>
+    <script src="~/protend/libs/owl.carousel.min.js"></script>*@
 
 @*    <script src="~/protend/libs/apexcharts.js"></script>*@
-    <script src="~/protend/libs/simplebar.min.js"></script>
+    @*<script src="~/protend/libs/simplebar.min.js"></script>*@
 
     <!-- APP JS -->
-    <script src="~/protend/js/main.js"></script>
-    <script src="~/protend/js/dashboard.js"></script>
-    <script src="~/protend/js/shortcode.js"></script>
-    <script src="~/protend/js/pages/dashboard.js"></script>
+    @*<script src="~/protend/js/main.js"></script>*@
+    @*<script src="~/protend/js/dashboard.js"></script>*@
+    @*<script src="~/protend/js/shortcode.js"></script>*@
+    @*<script src="~/protend/js/pages/dashboard.js"></script>*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
