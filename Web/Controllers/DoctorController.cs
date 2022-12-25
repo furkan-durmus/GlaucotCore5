@@ -9,21 +9,24 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
 using Web.Identity;
+using Web.Models.DataTables;
 using Web.Models.Doctor;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Web.Controllers
 {
-    [Authorize(Roles = "Doctor")]
+    //[Authorize(Roles = "Doctor")]
     public class DoctorController : BaseController
     {
         private readonly UserManager<DoctorUser> _userManager;
         private readonly IMedicineService _medicineService;
-        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null)
+        private readonly IPatientService _patientService;
+        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null, IPatientService patientService = null)
         {
             _userManager = userManager;
             _medicineService = medicineService;
+            _patientService = patientService;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -95,9 +98,25 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult PatientsHandler()
+        public async Task<IActionResult> PatientsHandler(PatientDataTablesViewModel model)
         {
-            return Json(new { ok = true });
+            var response = new DataTablesReturnModel { draw = model.draw };
+
+            var result = await _patientService.PatientsDataTable(
+                new Business.DTOS.PatientDataTablesParam { 
+                    TextSearch = model.TextSearch,
+                    OrderCol = model.order.FirstOrDefault()?.column ?? 0,
+                    OrderDesc = model.order.FirstOrDefault()?.dir?.Equals("desc") ?? false,
+                    Size = model.length,
+                    Start = model.start
+                });
+
+            response.data = result.Model;
+            response.error = result.ErrorMessage;
+            response.recordsFiltered = result.ItemCount;
+            response.recordsTotal = result.ItemCount;
+
+            return Json(response);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Entities.Concrete;
+﻿using Business.DTOS;
+using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Business.Abstract
         void Add(Patient patient);
         void Update(Patient patient);
         void Delete(Patient patient);
-        
+        Task<PagingModelResponse<Patient>> PatientsDataTable(PatientDataTablesParam model);
+
     }
 }

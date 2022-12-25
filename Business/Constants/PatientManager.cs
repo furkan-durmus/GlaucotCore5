@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.DTOS;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
@@ -36,6 +37,28 @@ namespace Business.Constants
         public List<Patient> GetAll()
         {
             return _patientDal.GetAll();
+        }
+
+        public async Task<PagingModelResponse<Patient>> PatientsDataTable(PatientDataTablesParam model)
+        {
+            var datas = await _patientDal.PatientDalDataTable(model.TextSearch, model.OrderCol, model.OrderDesc, model.Start, model.Size);
+
+            return new PagingModelResponse<Patient>
+            {
+                ItemCount = datas.ItemCount,
+                PageNumber = datas.PageNumber,
+                PageSize = datas.PageSize,
+                Model = datas.Model.Select(v => new Patient
+                {
+                    PatientId = v.PatientId,
+                    PatientName = v.PatientName,
+                    PatientLastName = v.PatientLastName,
+                    PatientAge = v.PatientAge,
+                    PatientPhoneNumber = v.PatientPhoneNumber,
+                    PatientGender = v.PatientGender
+                }).ToList()
+            };
+
         }
 
         public void Update(Patient patient)
