@@ -1,0 +1,31 @@
+﻿@model List<Web.Models.Doctor.PatientDetailViewModel>
+@{
+    ViewData["Title"] = "PatientDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card border border-light mt-1" style="max-width:100%;">
+    <div class="card-header" style="padding:0.75em 1.25em 0.25em; /*color:white;*/"><h3>@TempData["PName"] @TempData["PLastName"]</h3></div>
+
+    <div class="card-body">
+        <table class="table table-bordered table-striped table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Medicine Name</th>
+                    <th>Daily Times</th>
+                    <th>Usage Time List</th>
+                    <th>Side Effect</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MedicineName</td>
+                    <td>@item.MedicineFrequency</td>
+                    <td>@item.MedicineUsegeTimeList</td>
+                    <td>@item.MedicineSideEffect</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

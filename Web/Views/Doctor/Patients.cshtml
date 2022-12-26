@@ -44,19 +44,19 @@
                 <thead>
                     <tr id="trHeader">
                         <th>
-                            Patient Name
+                            Name
                         </th>
                         <th>
-                            Patient LastName
+                            LastName
                         </th>
                         <th>
-                            Patient Age
+                            Age
                         </th>
                         <th>
-                            Patient Gender
+                            Gender
                         </th>
                         <th>
-                            Patient PhoneNumber
+                            Phone Number
                         </th>
                         <th>
                             Options
@@ -116,7 +116,8 @@
                     {
                         data: "patientId",
                         render: function (data, _, row) {
-                            return '<a href="#" data-id="' + data + '" class="btn btn-sm btn-warning m-1">Detail</a>';
+                            var url = "@Url.Action("PatientDetail","Doctor")";
+                            return '<a href="' + url + '?patient=' + data + '" class="btn btn-sm btn-warning m-1">Detail</a>';
                         }
                     },
 

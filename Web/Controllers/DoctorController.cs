@@ -22,11 +22,13 @@ namespace Web.Controllers
         private readonly UserManager<DoctorUser> _userManager;
         private readonly IMedicineService _medicineService;
         private readonly IPatientService _patientService;
-        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null, IPatientService patientService = null)
+        private readonly IMedicineRecordService _medicineRecordService;
+        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null, IPatientService patientService = null, IMedicineRecordService medicineRecordService = null)
         {
             _userManager = userManager;
             _medicineService = medicineService;
             _patientService = patientService;
+            _medicineRecordService = medicineRecordService;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -168,6 +170,28 @@ namespace Web.Controllers
             response.recordsTotal = result.ItemCount;
 
             return Json(response);
+        }
+
+        public IActionResult PatientDetail([FromQuery]Guid patient)
+        {
+            if (patient == Guid.Empty)
+                return Redirect("/");
+
+            var patientInf = _patientService.Get(patient);
+            TempData["PName"] = patientInf.PatientName;
+            TempData["PLastName"] = patientInf.PatientLastName;
+
+            var medicineList = _medicineRecordService.GetAll(patient);
+
+            var model = medicineList.Select(q => new PatientDetailViewModel 
+            {
+                MedicineName = _medicineService.Get(q.MedicineId).MedicineName,
+                MedicineFrequency = q.MedicineFrequency,
+                MedicineUsegeTimeList = q.MedicineUsegeTimeList,
+                MedicineSideEffect = q.MedicineSideEffect
+            }).ToList();
+
+            return View(model);
         }
     }
 }
