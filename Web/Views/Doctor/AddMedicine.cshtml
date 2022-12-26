@@ -5,11 +5,18 @@
 }
 
 @section Styles{
+    <link href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <style>
+        #trHeader th {
+/*            position: sticky !important;
+            top: 72px !important;*/
+            border-bottom: 2px solid;
+            background-color: #2A2B36;
+            color: white;
+        }
         .col-form-label {
             margin-bottom:20px !important;
         }
-
         .form-div{
             margin-bottom:20px !important;
         }
@@ -39,7 +46,48 @@
     </div>
 }
 
+<form style="margin-top:35px;">
+    <div class="card border border-light mt-1" style="max-width:100%;">
+        <div class="card-header" style="padding:0.75em 1.25em 0.25em; /*color:white;*/"><h3>Medicines</h3></div>
+
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="Search..." id="textSearch" />
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <button class="btn btn-warning ml-1" type="button" style="color:white;" id="btnSearch"><i class="bi bi-search mr-2"></i>Search</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-light" style="max-width:100%;">
+        <div class="card-body">
+            <table id="table" class="table table-bordered table-striped table-hover" style="width:100%">
+                <thead>
+                    <tr id="trHeader">
+                        <th>
+                            Medicine Name
+                        </th>
+                        <th>
+                            Options
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+
 @section Scripts{
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/jszip-2.5.0/dt-1.10.21/b-1.6.3/b-colvis-1.6.3/b-html5-1.6.3/datatables.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
@@ -66,6 +114,41 @@
                     });
                 }
             }
+
+
+            var dataTable = $('#table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "@Url.Action("MedicineHandler")",
+                    type: "POST",
+                    data: function (d) {
+                        d.TextSearch = $("#textSearch").val();
+                    }
+                },
+                dom: " <'row'<'col-xl-12'l>>" + "<'row'<'col-xl-12'tr>>" + "<'row'<'col-xl-7'i><'col-xl-5'p>>",
+                pageLength: 50,
+                lengthMenu: [[5, 10, 50, 100], ['5', '10', '50', '100']],
+                order: [
+                    [0, 'desc']
+                ],
+                columns: [
+                    {
+                        data: "medicineName"
+                    },
+                    {
+                        data: "medicineId",
+                        render: function (data, _, row) {
+                            return '<a href="#" data-id="' + data + '" class="btn btn-sm btn-warning m-1">Edit</a>' + '<a href="#" data-id="' + data + '" class="btn btn-sm btn-danger m-1">Delete</a>';
+                        }
+                    },
+
+                ]
+            });
+
+            $("#btnSearch").click(function () {
+                dataTable.draw();
+            });
         });
 
     </script>

@@ -58,7 +58,6 @@ namespace Business.Constants
                     PatientGender = v.PatientGender
                 }).ToList()
             };
-
         }
 
         public void Update(Patient patient)

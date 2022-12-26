@@ -16,7 +16,7 @@ using Web.Models.Doctor;
 
 namespace Web.Controllers
 {
-    //[Authorize(Roles = "Doctor")]
+    [Authorize(Roles = "Doctor")]
     public class DoctorController : BaseController
     {
         private readonly UserManager<DoctorUser> _userManager;
@@ -90,6 +90,35 @@ namespace Web.Controllers
             }
 
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult EditMedicine(EditMedicineViewModel model)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MedicineHandler(MedicineDataTablesViewModel model)
+        {
+            var response = new DataTablesReturnModel { draw = model.draw };
+
+            var result = await _medicineService.MedicineDataTable(
+                new Business.DTOS.MedicineDataTablesParam
+                {
+                    TextSearch = model.TextSearch,
+                    OrderCol = model.order.FirstOrDefault()?.column ?? 0,
+                    OrderDesc = model.order.FirstOrDefault()?.dir?.Equals("desc") ?? false,
+                    Size = model.length,
+                    Start = model.start
+                });
+
+            response.data = result.Model;
+            response.error = result.ErrorMessage;
+            response.recordsFiltered = result.ItemCount;
+            response.recordsTotal = result.ItemCount;
+
+            return Json(response);
         }
 
         public IActionResult Patients()

@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
+using Business.DTOS;
 using DataAccess.Abstract;
+using DataAccess.Contrete.EntityFramework;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
@@ -41,6 +43,23 @@ namespace Business.Constants
         public List<string> GetAllMedicineName()
         {
             return _medicineDal.GetAll().Select(q => q.MedicineName.ToLower()).ToList();
+        }
+
+        public async Task<PagingModelResponse<Medicine>> MedicineDataTable(MedicineDataTablesParam model)
+        {
+            var datas = await _medicineDal.MedicineDalDataTable(model.TextSearch, model.OrderCol, model.OrderDesc, model.Start, model.Size);
+
+            return new PagingModelResponse<Medicine>
+            {
+                ItemCount = datas.ItemCount,
+                PageNumber = datas.PageNumber,
+                PageSize = datas.PageSize,
+                Model = datas.Model.Select(v => new Medicine
+                {
+                    MedicineId = v.MedicineId,
+                    MedicineName = v.MedicineName
+                }).ToList()
+            };
         }
 
         public void Update(Medicine medicine)
