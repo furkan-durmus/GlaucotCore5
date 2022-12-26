@@ -16,6 +16,7 @@ namespace Business.Abstract
         void Add(Medicine medicine);
         void Update(Medicine medicine);
         void Delete(Medicine medicine);
+        void DeleteById(int medicineId);
         Task<PagingModelResponse<Medicine>> MedicineDataTable(MedicineDataTablesParam model);
     }
 }

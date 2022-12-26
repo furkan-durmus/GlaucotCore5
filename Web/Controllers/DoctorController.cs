@@ -95,7 +95,29 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult EditMedicine(EditMedicineViewModel model)
         {
-            return View();
+            try
+            {
+                _medicineService.Update(new Entities.Concrete.Medicine { MedicineId = model.MedicineId, MedicineName = model.MedicineName});
+                return Json(new { ok = true });
+            }
+            catch (Exception)
+            {
+                return Json(new { ok = false });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteMedicine(int medicineId)
+        {
+            try
+            {
+                _medicineService.DeleteById(medicineId);
+                return Json(new { ok = true });
+            }
+            catch (Exception)
+            {
+                return Json(new { ok = false });
+            }
         }
 
         [HttpPost]

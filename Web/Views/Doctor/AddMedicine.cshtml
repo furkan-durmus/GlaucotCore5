@@ -91,6 +91,8 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
+            var medicineId = 0;
+            var deleteMedicineId = 0;
             $('.medicine').addClass("active");
             var result = "@TempData["Result"]";
             if(result != null && result != "") {
@@ -115,7 +117,6 @@
                 }
             }
 
-
             var dataTable = $('#table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -139,15 +140,117 @@
                     {
                         data: "medicineId",
                         render: function (data, _, row) {
-                            return '<a href="#" data-id="' + data + '" class="btn btn-sm btn-warning m-1">Edit</a>' + '<a href="#" data-id="' + data + '" class="btn btn-sm btn-danger m-1">Delete</a>';
+                            return '<button type="button" data-name="' + row.medicineName + '" data-id="' + data + '" class="btn btn-sm btn-warning m-1 editMedicine">Edit</button>' + '<button type="button" data-id="' + data + '" class="btn btn-sm btn-danger m-1 deleteMedicine">Delete</button>';
                         }
                     },
 
                 ]
             });
-
+ 
             $("#btnSearch").click(function () {
                 dataTable.draw();
+            });
+
+            $(document).on('click', '.editMedicine', function () {
+                medicineId = $(this).data("id");
+                var { value: textMedicine } = Swal.fire({
+                    title: 'Edit Medicine',
+                    input: 'text',
+                    inputLabel: 'Medicine Name',
+                    inputValue: $(this).data("name"),
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'You need to write something!'
+                        }
+                    }
+                });
+
+                if (textMedicine) {
+                    Swal.fire(`Your IP address is ${textMedicine}`)
+                }
+            });
+
+            $(document).on('click', '.swal2-confirm', function () {
+                editName = $('#swal2-input').val();
+                $.ajax({
+                    url: "/Doctor/EditMedicine",
+                    data: { "medicineId": medicineId, "medicineName": editName },
+                    type: "POST",
+                    dataType: "JSON",
+                    success: function (result) {
+                        if (result.ok) {
+                            Swal.fire(`${editName} has been edited`);
+                            dataTable.draw();
+                        }
+                        else{
+                            Swal.fire(
+                                'ERROR',
+                                'Sometihng went wrong!',
+                                'error'
+                            )
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', '.deleteMedicine', function () {
+                deleteMedicineId = $(this).data("id");
+
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/Doctor/DeleteMedicine",
+                            data: { "medicineId": deleteMedicineId },
+                            type: "POST",
+                            dataType: "JSON",
+                            success: function (result) {
+                                if (result.ok) {
+                                    swalWithBootstrapButtons.fire(
+                                        'Deleted!',
+                                        'Medicine has been deleted.',
+                                        'success'
+                                    )
+                                    dataTable.draw();
+                                }
+                                else {
+                                    Swal.fire(
+                                        'ERROR',
+                                        'Sometihng went wrong!',
+                                        'error'
+                                    )
+                                }
+                            }
+                        });
+                    } 
+                    //else if (
+                    //    /* Read more about handling dismissals below */
+                    //    result.dismiss === Swal.DismissReason.cancel
+                    //) {
+                    //    swalWithBootstrapButtons.fire(
+                    //        'Cancelled',
+                    //        'Your imaginary file is safe :)',
+                    //        'error'
+                    //    )
+                    //}
+                })
+
             });
         });
 

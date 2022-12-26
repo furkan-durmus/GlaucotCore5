@@ -30,6 +30,15 @@ namespace Business.Constants
             _medicineDal.Update(medicine);
         }
 
+        public void DeleteById(int medicineId)
+        {
+            var medicine = _medicineDal.Get(q => q.MedicineId == medicineId);
+            if (medicine == null)
+                throw new Exception();
+
+            _medicineDal.Delete(medicine);
+        }
+
         public Medicine Get(int medicineId)
         {
             return _medicineDal.Get(m => m.MedicineId == medicineId);
