@@ -22,5 +22,10 @@ namespace Business.Constants
         {
             _eyePressureRecordDal.Add(eyePressureRecord);
         }
+
+        public List<EyePressureRecord> GetAllPatientEyePressure(Guid patientId)
+        {
+            return _eyePressureRecordDal.GetAll(p => p.PatientId == patientId);
+        }
     }
 }

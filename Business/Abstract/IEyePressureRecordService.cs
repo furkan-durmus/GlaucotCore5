@@ -10,5 +10,6 @@ namespace Business.Abstract
     public interface IEyePressureRecordService
     {
         void AddPatientEyePressure(EyePressureRecord eyePressureRecord);
+        List<EyePressureRecord> GetAllPatientEyePressure(Guid patientId);
     }
 }
