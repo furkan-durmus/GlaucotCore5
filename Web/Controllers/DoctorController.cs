@@ -23,12 +23,14 @@ namespace Web.Controllers
         private readonly IMedicineService _medicineService;
         private readonly IPatientService _patientService;
         private readonly IMedicineRecordService _medicineRecordService;
-        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null, IPatientService patientService = null, IMedicineRecordService medicineRecordService = null)
+        private readonly IGlassRecordService _glassRecordService;
+        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null, IPatientService patientService = null, IMedicineRecordService medicineRecordService = null, IGlassRecordService glassRecordService = null)
         {
             _userManager = userManager;
             _medicineService = medicineService;
             _patientService = patientService;
             _medicineRecordService = medicineRecordService;
+            _glassRecordService = glassRecordService;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -181,9 +183,11 @@ namespace Web.Controllers
             TempData["PName"] = patientInf.PatientName;
             TempData["PLastName"] = patientInf.PatientLastName;
 
+            var glassRecord = _glassRecordService.GetAll(patient);
+
             var medicineList = _medicineRecordService.GetAll(patient);
 
-            var model = medicineList.Select(q => new PatientDetailViewModel 
+            var medicine = medicineList.Select(q => new MedicineInformation 
             {
                 MedicineName = _medicineService.Get(q.MedicineId).MedicineName,
                 MedicineFrequency = q.MedicineFrequency,
@@ -191,7 +195,14 @@ namespace Web.Controllers
                 MedicineSideEffect = q.MedicineSideEffect
             }).ToList();
 
-            return View(model);
+            var glass = glassRecord.Where(q => !q.IsActive).Select(q => new GlassRecordInformation
+            {
+                StartDate = q.StartDate.AddHours(10),
+                EndDate = q.EndDate.AddHours(10),
+                DiffDate = q.EndDate - q.StartDate
+            }).ToList();
+
+            return View(new PatientDetailViewModel { Medicine = medicine, GlassRecord = glass});
         }
     }
 }

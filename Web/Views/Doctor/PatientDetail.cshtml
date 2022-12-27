@@ -1,11 +1,11 @@
-﻿@model List<Web.Models.Doctor.PatientDetailViewModel>
+﻿@model Web.Models.Doctor.PatientDetailViewModel
 @{
     ViewData["Title"] = "PatientDetail";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<div class="card border border-light mt-1" style="max-width:100%;">
-    <div class="card-header" style="padding:0.75em 1.25em 0.25em; /*color:white;*/"><h3>@TempData["PName"] @TempData["PLastName"]</h3></div>
+<h3>@TempData["PName"] @TempData["PLastName"]</h3>
+<div class="card border border-light my-5" style="max-width:100%;">
+    <div class="card-header" style="padding:0.75em 1.25em 0.25em; /*color:white;*/"><h3>Medicine Records</h3></div>
 
     <div class="card-body">
         <table class="table table-bordered table-striped table-hover" style="width:100%">
@@ -17,13 +17,37 @@
                     <th>Side Effect</th>
                 </tr>
             </thead>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Medicine)
             {
                 <tr>
                     <td>@item.MedicineName</td>
                     <td>@item.MedicineFrequency</td>
                     <td>@item.MedicineUsegeTimeList</td>
                     <td>@item.MedicineSideEffect</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<div class="card border border-light mt-1" style="max-width:100%;">
+    <div class="card-header" style="padding:0.75em 1.25em 0.25em; /*color:white;*/"><h3>Glass Records</h3></div>
+
+    <div class="card-body">
+        <table class="table table-bordered table-striped table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model.GlassRecord)
+            {
+                <tr>
+                    <td>@item.StartDate</td>
+                    <td>@item.EndDate</td>
+                    <td>@item.DiffDate</td>
                 </tr>
             }
         </table>
