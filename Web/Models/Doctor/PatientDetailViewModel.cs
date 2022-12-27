@@ -20,14 +20,14 @@ namespace Web.Models.Doctor
 
     public class GlassRecordInformation
     {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
         public TimeSpan DiffDate { get; set; }
     }
 
     public class EyePressure
     {
-        public DateTime EyePressureDate { get; set; }
+        public string EyePressureDate { get; set; }
         public float LeftEyePressure { get; set; }
         public float RightEyePressure { get; set; }
     }

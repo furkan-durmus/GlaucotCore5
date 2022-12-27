@@ -202,16 +202,16 @@ namespace Web.Controllers
 
             var glass = glassRecord.Where(q => !q.IsActive).Select(q => new GlassRecordInformation
             {
-                StartDate = q.StartDate.AddHours(10),
-                EndDate = q.EndDate.AddHours(10),
+                StartDate = q.StartDate.AddHours(10).ToString("dd-MM-yyyy HH:mm:ss"),
+                EndDate = q.EndDate.AddHours(10).ToString("dd-MM-yyyy HH:mm:ss"),
                 DiffDate = q.EndDate - q.StartDate
             }).ToList();
 
             var eyePressure = eyePressureList.Select(q => new EyePressure
             {
-                EyePressureDate = q.EyePressureDate,
+                EyePressureDate = q.EyePressureDate.ToString("dd-MM-yyyy HH:mm:ss"),
                 LeftEyePressure = q.LeftEyePressure,
-                RightEyePressure = q.RightEyePressure,
+                RightEyePressure = q.RightEyePressure
             }).ToList();
 
             return View(new PatientDetailViewModel { Medicine = medicine, GlassRecord = glass, EyePressure = eyePressure });
