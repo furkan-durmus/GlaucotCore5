@@ -35,7 +35,10 @@ namespace Web.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            return View();
+            int patients = _patientService.GetAll().Count;
+            int medicines = _medicineService.GetAll().Count;
+
+            return View(new MedsPatsCountViewModel { Medicines = medicines, Patients = patients });
         }
 
         public IActionResult ChangePassword()
