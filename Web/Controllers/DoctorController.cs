@@ -24,13 +24,15 @@ namespace Web.Controllers
         private readonly IPatientService _patientService;
         private readonly IMedicineRecordService _medicineRecordService;
         private readonly IGlassRecordService _glassRecordService;
-        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null, IPatientService patientService = null, IMedicineRecordService medicineRecordService = null, IGlassRecordService glassRecordService = null)
+        private readonly IEyePressureRecordService _eyePressureRecordService;
+        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null, IPatientService patientService = null, IMedicineRecordService medicineRecordService = null, IGlassRecordService glassRecordService = null, IEyePressureRecordService eyePressureRecordService = null)
         {
             _userManager = userManager;
             _medicineService = medicineService;
             _patientService = patientService;
             _medicineRecordService = medicineRecordService;
             _glassRecordService = glassRecordService;
+            _eyePressureRecordService = eyePressureRecordService;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -187,9 +189,9 @@ namespace Web.Controllers
             TempData["PLastName"] = patientInf.PatientLastName;
 
             var glassRecord = _glassRecordService.GetAll(patient);
-
             var medicineList = _medicineRecordService.GetAll(patient);
-
+            var eyePressureList = _eyePressureRecordService.GetAllPatientEyePressure(patient);
+            
             var medicine = medicineList.Select(q => new MedicineInformation 
             {
                 MedicineName = _medicineService.Get(q.MedicineId).MedicineName,
@@ -205,7 +207,14 @@ namespace Web.Controllers
                 DiffDate = q.EndDate - q.StartDate
             }).ToList();
 
-            return View(new PatientDetailViewModel { Medicine = medicine, GlassRecord = glass});
+            var eyePressure = eyePressureList.Select(q => new EyePressure
+            {
+                EyePressureDate = q.EyePressureDate,
+                LeftEyePressure = q.LeftEyePressure,
+                RightEyePressure = q.RightEyePressure,
+            }).ToList();
+
+            return View(new PatientDetailViewModel { Medicine = medicine, GlassRecord = glass, EyePressure = eyePressure });
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Web.Models.Doctor
     {
         public List<MedicineInformation> Medicine { get; set; }
         public List<GlassRecordInformation> GlassRecord { get; set; }
+        public List<EyePressure> EyePressure { get; set; }
     }
 
     public class MedicineInformation
@@ -23,4 +24,12 @@ namespace Web.Models.Doctor
         public DateTime EndDate { get; set; }
         public TimeSpan DiffDate { get; set; }
     }
+
+    public class EyePressure
+    {
+        public DateTime EyePressureDate { get; set; }
+        public float LeftEyePressure { get; set; }
+        public float RightEyePressure { get; set; }
+    }
+
 }

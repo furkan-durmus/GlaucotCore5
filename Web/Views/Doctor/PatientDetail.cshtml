@@ -30,7 +30,7 @@
     </div>
 </div>
 
-<div class="card border border-light mt-1" style="max-width:100%;">
+<div class="card border border-light my-5" style="max-width:100%;">
     <div class="card-header" style="padding:0.75em 1.25em 0.25em; /*color:white;*/"><h3>Glass Records</h3></div>
 
     <div class="card-body">
@@ -48,6 +48,30 @@
                     <td>@item.StartDate</td>
                     <td>@item.EndDate</td>
                     <td>@item.DiffDate</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<div class="card border border-light" style="max-width:100%;">
+    <div class="card-header" style="padding:0.75em 1.25em 0.25em; /*color:white;*/"><h3>Eye Pressure Records</h3></div>
+
+    <div class="card-body">
+        <table class="table table-bordered table-striped table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Left Eye</th>
+                    <th>Right Eye</th>
+                </tr>
+            </thead>
+            @foreach (var item in Model.EyePressure)
+            {
+                <tr>
+                    <td>@item.EyePressureDate</td>
+                    <td>@item.LeftEyePressure</td>
+                    <td>@item.RightEyePressure</td>
                 </tr>
             }
         </table>
