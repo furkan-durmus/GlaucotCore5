@@ -19,7 +19,8 @@ namespace Web.Controllers
         IGlassRecordService _glassRecordService;
         IMedicineService _medicineService;
         IMedicineRecordService _medicineRecordService;
-        public PatientController(IPatientService patientService, IRegisterService registerService, ILoginService loginService, IMobileHomeService mobileHomeService, IOTPService otpService, IGlassRecordService glassRecordService, IMedicineService medicineService, IMedicineRecordService medicineRecordService)
+        IEyePressureRecordService _eyePressureRecordService;
+        public PatientController(IPatientService patientService, IRegisterService registerService, ILoginService loginService, IMobileHomeService mobileHomeService, IOTPService otpService, IGlassRecordService glassRecordService, IMedicineService medicineService, IMedicineRecordService medicineRecordService, IEyePressureRecordService eyePressureRecordService)
         {
             _patientService = patientService;
             _registerService = registerService;
@@ -29,6 +30,7 @@ namespace Web.Controllers
             _glassRecordService = glassRecordService;
             _medicineService = medicineService;
             _medicineRecordService = medicineRecordService;
+            _eyePressureRecordService = eyePressureRecordService;
         }
 
         [HttpPost("register")]
@@ -197,6 +199,26 @@ namespace Web.Controllers
 
             string response = _glassRecordService.UpdateOrAddGlassRecord(patient.PatientId);
             return Ok(new { status = response.Contains("start") ? 1 : 2, message = response });
+        }
+
+        [HttpPost("addeyepressurerecord")]
+        public IActionResult AddPatientEyePressureRecord(EyePressureRecordRequest patientEyePressureRecordRequest)
+        {
+
+            if (!_mobileHomeService.CheckKeyIsValid(patientEyePressureRecordRequest.PatientId, patientEyePressureRecordRequest.SecretKey))
+            {
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
+            }
+
+            EyePressureRecord eyePressureRecord = new();
+            eyePressureRecord.PatientId = patientEyePressureRecordRequest.PatientId;
+            eyePressureRecord.EyePressureDate = patientEyePressureRecordRequest.EyePressureDate;
+            eyePressureRecord.LeftEyePressure = patientEyePressureRecordRequest.LeftEyePressure;
+            eyePressureRecord.RightEyePressure = patientEyePressureRecordRequest.RightEyePressure;
+
+
+            _eyePressureRecordService.AddPatientEyePressure(eyePressureRecord);
+            return Ok(new { status =  1, message = "Göz Tansiyon Kaydı Başarılı" });
         }
 
 

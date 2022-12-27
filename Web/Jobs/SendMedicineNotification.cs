@@ -12,14 +12,17 @@ namespace Web.Jobs
     public class SendMedicineNotification
     {
         IMedicineRecordService _medicineRecordService;
-        public SendMedicineNotification(IMedicineRecordService medicineRecordService)
+        IHangfireLogService _hangfireLogService;
+        public SendMedicineNotification(IMedicineRecordService medicineRecordService, IHangfireLogService hangfireLogService)
         {
             _medicineRecordService = medicineRecordService;
+            _hangfireLogService = hangfireLogService;
         }
         public void SendNotificationWithOneSignal()
         {
 
-            DateTime closestHalfOrFullTime = DateTime.Now;
+            DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);
+            //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 06:01:05").AddHours(10);
             int minuteOfTime = closestHalfOrFullTime.Minute;
             if (minuteOfTime < 15)
                 closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes(-minuteOfTime).AddSeconds(-closestHalfOrFullTime.Second);
@@ -34,47 +37,73 @@ namespace Web.Jobs
 
             List<NotificationMedicine> patientsDataForNotification = _medicineRecordService.GetDataForMedicineNotification(myExactTime);
 
-            foreach (var notificationData in patientsDataForNotification)
+            var attemp = 0;
+
+            while (attemp<3)
             {
-                WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
-                tRequest.Method = "post";
-                //serverKey - Key from Firebase cloud messaging server  
-                tRequest.Headers.Add(string.Format("Authorization: key=AAAAft2AqF8:APA91bFge8bRCb9Ghq0PYUqyk-tKjk7jJgq9QlYzdJAeAWiu9crwudE0_CCpaOP31L2fx87Fj_vlgoHAus2U8AmRIAZreFIVUYkAd1P1ajk95uIu4dba93IUt8JSQPLv-RF4C0c_IvSs"));
-                tRequest.ContentType = "application/json";
-                var payload = new
+                try
                 {
-                    to = notificationData.PatientNotificationToken,
-                    priority = "high",
-                    content_available = true,
-                    notification = new
+                    foreach (var notificationData in patientsDataForNotification)
                     {
-                        title = "Glaucot Medicine Reminder",
-                        body = $"It's {notificationData.CurrentTime}, time to get {notificationData.MedicineName}",
-                        badge = 1
-                    },
-
-                };
-
-                string postbody = JsonConvert.SerializeObject(payload).ToString();
-                Byte[] byteArray = Encoding.UTF8.GetBytes(postbody);
-                tRequest.ContentLength = byteArray.Length;
-                using (Stream dataStream = tRequest.GetRequestStream())
-                {
-                    dataStream.Write(byteArray, 0, byteArray.Length);
-                    using (WebResponse tResponse = tRequest.GetResponse())
-                    {
-                        using (Stream dataStreamResponse = tResponse.GetResponseStream())
+                        WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
+                        tRequest.Method = "post";
+                        //serverKey - Key from Firebase cloud messaging server  
+                        tRequest.Headers.Add(string.Format("Authorization: key=AAAAft2AqF8:APA91bFge8bRCb9Ghq0PYUqyk-tKjk7jJgq9QlYzdJAeAWiu9crwudE0_CCpaOP31L2fx87Fj_vlgoHAus2U8AmRIAZreFIVUYkAd1P1ajk95uIu4dba93IUt8JSQPLv-RF4C0c_IvSs"));
+                        tRequest.ContentType = "application/json";
+                        var payload = new
                         {
-                            if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
-                                {
-                                    String sResponseFromServer = tReader.ReadToEnd();
-                                    //result.Response = sResponseFromServer;
-                                }
-                        }
-                    }
-                }
+                            to = notificationData.PatientNotificationToken,
+                            priority = "high",
+                            content_available = true,
+                            notification = new
+                            {
+                                title = "Glaucot Medicine Reminder",
+                                body = $"It's {notificationData.CurrentTime}, time to get {notificationData.MedicineName}",
+                                badge = 1
+                            },
+                            data = new
+                            {
+                                title = "Glaucot Medicine Reminder",
+                                body = $"It's {notificationData.CurrentTime}, time to get {notificationData.MedicineName}",
+                                badge = 1
+                            },
 
+                        };
+
+                        string postbody = JsonConvert.SerializeObject(payload).ToString();
+                        Byte[] byteArray = Encoding.UTF8.GetBytes(postbody);
+                        tRequest.ContentLength = byteArray.Length;
+                        using (Stream dataStream = tRequest.GetRequestStream())
+                        {
+                            dataStream.Write(byteArray, 0, byteArray.Length);
+                            using (WebResponse tResponse = tRequest.GetResponse())
+                            {
+                                using (Stream dataStreamResponse = tResponse.GetResponseStream())
+                                {
+                                    if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
+                                        {
+                                            String sResponseFromServer = tReader.ReadToEnd();
+                                            //result.Response = sResponseFromServer;
+                                        }
+                                }
+                            }
+                        }
+
+                    }
+                    break;
+                }
+                catch (Exception e)
+                {
+                    attemp = +1;
+                    HangfireLog hangfireLog = new();
+                    hangfireLog.LogSource = e.Source;
+                    hangfireLog.LogMessage = e.Message;
+                    hangfireLog.LogInnerException = e.InnerException.Message;
+                    hangfireLog.LogTime=DateTime.Now;
+                    _hangfireLogService.SaveLogToDb(hangfireLog);
+                }
             }
+            
 
         }
     }

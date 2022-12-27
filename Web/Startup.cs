@@ -95,6 +95,12 @@ namespace Web
 
             services.AddSingleton<IMedicineRecordService, MedicineRecordManager>();
             services.AddSingleton<IMedicineRecordDal, EFMedicineRecordDal>();
+            
+            services.AddSingleton<IEyePressureRecordService, EyePressureRecordManager>();
+            services.AddSingleton<IEyePressureRecordDal, EFEyePressureRecordDal>();
+            
+            services.AddSingleton<IHangfireLogService, HangfireLogManager>();
+            services.AddSingleton<IHangfireLogDal, EFHangfireLogDal>();
 
             services.AddSingleton<IMedicineService, MedicineManager>();
             services.AddSingleton<IMedicineDal, EFMedicineDal>();
@@ -107,6 +113,7 @@ namespace Web
             {
                 x.UseSqlServerStorage(SelectedDatabase.LiveServerReal);
                 RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "0,30 * * * *");
+                //RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "*/1 * * * *");
             });
 
             services.AddHangfireServer();

@@ -9,7 +9,7 @@ namespace TestSystem
     {
         static void Main(string[] args)
         {
-            var myTest = new SendMedicineNotification(new MedicineRecordManager(new EFMedicineRecordDal()));
+            var myTest = new SendMedicineNotification(new MedicineRecordManager(new EFMedicineRecordDal()),new HangfireLogManager(new EFHangfireLogDal()));
             myTest.SendNotificationWithOneSignal();
 
         }
