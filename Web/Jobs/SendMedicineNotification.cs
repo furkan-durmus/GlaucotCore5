@@ -93,7 +93,7 @@ namespace Web.Jobs
                                             //result.Response = sResponseFromServer;
 
                                             HangfireSuccessLog hangfireSuccessLog = new HangfireSuccessLog();
-                                            hangfireSuccessLog.NotificationDate = tResponse.LastModified;
+                                            hangfireSuccessLog.NotificationDate = tResponse.LastModified.AddHours(10);
                                             hangfireSuccessLog.StatusDescription = tResponse.StatusDescription;
                                             hangfireSuccessLog.StatusCode = tResponse.StatusCode.ToString();
                                             hangfireSuccessLog.SResponseFromServer = sResponseFromServer;
