@@ -99,8 +99,11 @@ namespace Web
             services.AddSingleton<IEyePressureRecordService, EyePressureRecordManager>();
             services.AddSingleton<IEyePressureRecordDal, EFEyePressureRecordDal>();
             
-            services.AddSingleton<IHangfireLogService, HangfireLogManager>();
-            services.AddSingleton<IHangfireLogDal, EFHangfireLogDal>();
+            services.AddSingleton<IHangfireErrorLogService, HangfireErrorLogManager>();
+            services.AddSingleton<IHangfireErrorLogDal, EFHangfireErrorLogDal>();
+            
+            services.AddSingleton<IHangfireSuccessLogService, HangfireSuccessLogManager>();
+            services.AddSingleton<IHangfireSuccessLogDal, EFHangfireSuccessLogDal>();
 
             services.AddSingleton<IMedicineService, MedicineManager>();
             services.AddSingleton<IMedicineDal, EFMedicineDal>();
@@ -112,7 +115,8 @@ namespace Web
             services.AddHangfire(x =>
             {
                 x.UseSqlServerStorage(SelectedDatabase.LiveServerReal);
-                RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "0,30 * * * *");
+                RecurringJob.AddOrUpdate<SendMedicineNotification>(j => j.SendNotificationWithOneSignal(), "0,30 * * * *");
+                RecurringJob.AddOrUpdate<ClearOldDataOfSuccessHangifireLog>(j=>j.ClearSuccessHangifireLog(), "1,31 * * * *");
                 //RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "*/1 * * * *");
             });
 

@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface IHangfireLogService
+    public interface IHangfireSuccessLogService
     {
-        void SaveLogToDb(HangfireLog log);
+        void SaveLogToDb(HangfireSuccessLog log);
+        void ClearOldSuccessLogs(int hour);
     }
 }

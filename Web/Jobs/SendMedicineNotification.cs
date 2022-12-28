@@ -12,17 +12,24 @@ namespace Web.Jobs
     public class SendMedicineNotification
     {
         IMedicineRecordService _medicineRecordService;
-        IHangfireLogService _hangfireLogService;
-        public SendMedicineNotification(IMedicineRecordService medicineRecordService, IHangfireLogService hangfireLogService)
+        IHangfireErrorLogService _hangfireErrorLogService;
+        IHangfireSuccessLogService _hangfireSuccessLogService;
+        public SendMedicineNotification(IMedicineRecordService medicineRecordService, IHangfireErrorLogService hangfireErrorLogService, IHangfireSuccessLogService hangfireSuccessLogService)
         {
             _medicineRecordService = medicineRecordService;
-            _hangfireLogService = hangfireLogService;
+            _hangfireErrorLogService = hangfireErrorLogService;
+            _hangfireSuccessLogService = hangfireSuccessLogService;
         }
         public void SendNotificationWithOneSignal()
         {
 
-            DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);
-            //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 06:01:05").AddHours(10);
+            //DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);
+            //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 11:01:05 AM").AddHours(10);
+
+            var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
+            DateTimeOffset localServerTime = DateTimeOffset.Now;
+            DateTimeOffset closestHalfOrFullTime = TimeZoneInfo.ConvertTime(localServerTime, info);
+
             int minuteOfTime = closestHalfOrFullTime.Minute;
             if (minuteOfTime < 15)
                 closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes(-minuteOfTime).AddSeconds(-closestHalfOrFullTime.Second);
@@ -39,7 +46,7 @@ namespace Web.Jobs
 
             var attemp = 0;
 
-            while (attemp<3)
+            while (attemp < 3)
             {
                 try
                 {
@@ -76,7 +83,7 @@ namespace Web.Jobs
                         using (Stream dataStream = tRequest.GetRequestStream())
                         {
                             dataStream.Write(byteArray, 0, byteArray.Length);
-                            using (WebResponse tResponse = tRequest.GetResponse())
+                            using (HttpWebResponse tResponse = (HttpWebResponse)tRequest.GetResponse())
                             {
                                 using (Stream dataStreamResponse = tResponse.GetResponseStream())
                                 {
@@ -84,8 +91,24 @@ namespace Web.Jobs
                                         {
                                             String sResponseFromServer = tReader.ReadToEnd();
                                             //result.Response = sResponseFromServer;
+
+                                            HangfireSuccessLog hangfireSuccessLog = new HangfireSuccessLog();
+                                            hangfireSuccessLog.NotificationDate = tResponse.LastModified;
+                                            hangfireSuccessLog.StatusDescription = tResponse.StatusDescription;
+                                            hangfireSuccessLog.StatusCode = tResponse.StatusCode.ToString();
+                                            hangfireSuccessLog.SResponseFromServer = sResponseFromServer;
+                                            hangfireSuccessLog.PatientPhone = notificationData.PatientPhoneNumber;
+
+                                            _hangfireSuccessLogService.SaveLogToDb(hangfireSuccessLog);
+
                                         }
+
+
+
                                 }
+
+
+
                             }
                         }
 
@@ -95,15 +118,16 @@ namespace Web.Jobs
                 catch (Exception e)
                 {
                     attemp = +1;
-                    HangfireLog hangfireLog = new();
-                    hangfireLog.LogSource = e.Source;
-                    hangfireLog.LogMessage = e.Message;
-                    hangfireLog.LogInnerException = e.InnerException.Message;
-                    hangfireLog.LogTime=DateTime.Now;
-                    _hangfireLogService.SaveLogToDb(hangfireLog);
+                    HangfireErrorLog hangfireErrorLog = new();
+                    hangfireErrorLog.LogSource = e?.Source;
+                    hangfireErrorLog.LogMessage = e?.Message;
+                    hangfireErrorLog.LogStackTrace = e?.StackTrace;
+                    hangfireErrorLog.LogInnerException = e.InnerException?.Message;
+                    hangfireErrorLog.LogTime = DateTime.Now;
+                    _hangfireErrorLogService.SaveLogToDb(hangfireErrorLog);
                 }
             }
-            
+
 
         }
     }

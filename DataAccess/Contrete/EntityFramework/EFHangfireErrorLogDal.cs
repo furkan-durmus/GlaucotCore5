@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Contrete.EntityFramework
 {
-    public class EFHangfireLogDal : EFEntityRepositoryBase<HangfireLog, GlaucotContext>, IHangfireLogDal
+    public class EFHangfireErrorLogDal : EFEntityRepositoryBase<HangfireErrorLog, GlaucotContext>, IHangfireErrorLogDal
     {
     }
 }

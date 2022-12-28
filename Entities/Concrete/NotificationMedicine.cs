@@ -10,6 +10,7 @@ namespace Entities.Concrete
     {
         public string MedicineName { get; set; }
         public string PatientNotificationToken { get; set; }
+        public string PatientPhoneNumber { get; set; }
         public string CurrentTime { get; set; }
     }
 }

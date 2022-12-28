@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Contrete.EntityFramework
 {
-    public class GlaucotContext: DbContext
+    public class GlaucotContext : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -23,6 +23,7 @@ namespace DataAccess.Contrete.EntityFramework
         public DbSet<Patient> Patients { get; set; }
         public DbSet<OTP> OTPs { get; set; }
         public DbSet<EyePressureRecord> EyePressureRecords { get; set; }
-        public DbSet<HangfireLog> HangfireLogs { get; set; }
+        public DbSet<HangfireErrorLog> HangfireErrorLogs { get; set; }
+        public DbSet<HangfireSuccessLog> HangfireSuccessLogs { get; set; }
     }
 }

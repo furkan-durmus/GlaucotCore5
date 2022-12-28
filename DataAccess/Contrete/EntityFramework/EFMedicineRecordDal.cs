@@ -55,7 +55,8 @@ namespace DataAccess.Contrete.EntityFramework
                         {
                             MedicineName = medicines.MedicineName,
                             PatientNotificationToken = patients.PatientNotificationToken,
-                            CurrentTime=time
+                            CurrentTime=time,
+                            PatientPhoneNumber=patients.PatientPhoneNumber,
 
                         }).ToList();
             }

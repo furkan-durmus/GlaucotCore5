@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Abstract
 {
-    public interface IHangfireLogDal : IEntitiyRepository<HangfireLog>
+    public interface IHangfireSuccessLogDal : IEntitiyRepository<HangfireSuccessLog>
     {
-
+        void DeleteLastNHours(int hour);
     }
 }
