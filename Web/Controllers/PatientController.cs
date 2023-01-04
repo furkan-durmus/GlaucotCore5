@@ -247,7 +247,7 @@ namespace Web.Controllers
             userOTPData.ExpireDate = DateTime.Now.AddMinutes(3);
             _otpService.Create(userOTPData);
 
-            return Ok(new { status = 1, message = $"OTP başarıyla oluşturuldu." });
+            return Ok(new { status = 1, message = userOTPData.OTPCode });
         }
 
 

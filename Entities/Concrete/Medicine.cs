@@ -11,5 +11,7 @@ namespace Entities.Concrete
     {
         public int MedicineId { get; set; }
         public string MedicineName { get; set; }
+        public int MedicineDefaultFrequency { get; set; }
+        public string MedicineImagePath { get; set; }
     }
 }

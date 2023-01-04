@@ -8,39 +8,50 @@
     <link href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <style>
         #trHeader th {
-/*            position: sticky !important;
+            /*            position: sticky !important;
             top: 72px !important;*/
             border-bottom: 2px solid;
             background-color: #2A2B36;
             color: white;
         }
+
         .col-form-label {
-            margin-bottom:20px !important;
+            margin-bottom: 20px !important;
         }
-        .form-div{
-            margin-bottom:20px !important;
+
+        .form-div {
+            margin-bottom: 20px !important;
         }
     </style>
 }
 
-@using (Html.BeginForm("AddMedicine", "Doctor", FormMethod.Post))
+@using (Html.BeginForm("AddMedicine", "Doctor", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="card" style="max-width:100%;">
         <div class="card-header">
             <h3>Add Medicine</h3>
         </div>
+
         <div class="card-body">
             <div class="input-group my-1">
                 <label for="medicineName" class="col-sm-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Name</label>
-                <div class="form-div col-sm-5">
+                <div class="form-div col-sm-3">
                     <input type="text" class="form-control" id="medicineName" asp-for="MedicineName" placeholder="Medicine Name">
                 </div>
+                @*<div class="form-div col-sm-1">
+                    <input type="number" max="10" min="1" class="form-control" id="medicineDefaultFrequency" asp-for="medicineDefaultFrequency" placeholder="0">
+                </div>
+                <div class="form-div col-sm-4">
+                    <input type="file" class="form-control" id="medicineImage" asp-for="medicineImage" accept="image/*" placeholder="Medicine Image">
+                </div>*@
                 <div class="col-sm-2">
                     <button type="submit" class="btn btn-warning">Save</button>
 
                 </div>
                 <div class="col-12 mb-0">
                     <span asp-validation-for="MedicineName" class="text-danger mt-1 offset-2 d-inline-block"></span>
+                    @*<span asp-validation-for="medicineDefaultFrequency" class="text-danger mt-1 offset-2 d-inline-block"></span>
+                    <span asp-validation-for="medicineImage" class="text-danger mt-1 offset-2 d-inline-block"></span>*@
                 </div>
             </div>
         </div>
@@ -147,7 +158,7 @@
 
                 ]
             });
- 
+
             $("#btnSearch").click(function () {
                 dataTable.draw();
             });
@@ -239,7 +250,7 @@
                                 }
                             }
                         });
-                    } 
+                    }
                     //else if (
                     //    /* Read more about handling dismissals below */
                     //    result.dismiss === Swal.DismissReason.cancel

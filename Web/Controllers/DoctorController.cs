@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Web.Extensions;
 using Web.Identity;
 using Web.Models.DataTables;
 using Web.Models.Doctor;
+using static System.Net.Mime.MediaTypeNames;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -89,8 +91,23 @@ namespace Web.Controllers
                     ModelState.AddModelError("MedicineName", "This medicine is already registered");
                     return View(model);
                 }
+                string imageName = "test.img";
+                string savePath = "MedicineImages/test.img";
+                int frequency = model.medicineDefaultFrequency == 0 ? 1 : model.medicineDefaultFrequency;
+                if (model.medicineImage != null)
+                {
+                    imageName = model.MedicineName.Replace(" ", "-") + Path.GetExtension(model.medicineImage.FileName);
 
-                _medicineService.Add(new Entities.Concrete.Medicine { MedicineName = model.MedicineName });
+                    //Get url To Save
+                    savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/MedicineImages", imageName);
+
+                    using (var stream = new FileStream(savePath, FileMode.Create))
+                    {
+                        model.medicineImage.CopyTo(stream);
+                    }
+                }
+
+                _medicineService.Add(new Entities.Concrete.Medicine { MedicineName = model.MedicineName,MedicineDefaultFrequency= frequency, MedicineImagePath= "MedicineImages/" + imageName });
                 TempData["Result"] = "success";
             }
             catch (Exception)
