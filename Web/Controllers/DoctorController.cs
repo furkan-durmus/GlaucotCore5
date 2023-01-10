@@ -91,8 +91,8 @@ namespace Web.Controllers
                     ModelState.AddModelError("MedicineName", "This medicine is already registered");
                     return View(model);
                 }
-                string imageName = "test.img";
-                string savePath = "MedicineImages/test.img";
+                string imageName = "test.png";
+                string savePath = "MedicineImages/test.png";
                 int frequency = model.medicineDefaultFrequency == 0 ? 1 : model.medicineDefaultFrequency;
                 if (model.medicineImage != null)
                 {
@@ -145,8 +145,8 @@ namespace Web.Controllers
                 if (medicine == null)
                     return RedirectToAction("AddMedicine");
 
-                string imageName = "test.img";
-                string savePath = "/MedicineImages/test.img";
+                string imageName = "test.png";
+                string savePath = "MedicineImages/test.png";
                 if (model.MedicineImage != null)
                 {
                     imageName = model.MedicineName.Replace(" ", "-") + Path.GetExtension(model.MedicineImage.FileName);
