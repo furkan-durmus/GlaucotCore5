@@ -107,7 +107,7 @@ namespace Web.Controllers
                     }
                 }
 
-                _medicineService.Add(new Entities.Concrete.Medicine { MedicineName = model.MedicineName,MedicineDefaultFrequency= frequency, MedicineImagePath= "MedicineImages/" + imageName });
+                _medicineService.Add(new Entities.Concrete.Medicine { MedicineName = model.MedicineName, MedicineDefaultFrequency = frequency, MedicineImagePath = "/MedicineImages/" + imageName });
                 TempData["Result"] = "success";
             }
             catch (Exception)
@@ -118,17 +118,61 @@ namespace Web.Controllers
             return View();
         }
 
+        public IActionResult EditMedicine([FromQuery] int id)
+        {
+            var medicine = _medicineService.Get(id);
+            if (medicine == null)
+                return RedirectToAction("AddMedicine");
+
+            return View(new EditMedicineViewModel
+            {
+                MedicineDefaultFrequency = medicine.MedicineDefaultFrequency,
+                MedicineId = medicine.MedicineId,
+                ImagePath = medicine.MedicineImagePath,
+                MedicineName = medicine.MedicineName
+            });
+        }
+
         [HttpPost]
         public IActionResult EditMedicine(EditMedicineViewModel model)
         {
             try
             {
-                _medicineService.Update(new Entities.Concrete.Medicine { MedicineId = model.MedicineId, MedicineName = model.MedicineName});
-                return Json(new { ok = true });
+                if (!ModelState.IsValid)
+                    return View(model);
+
+                var medicine = _medicineService.Get(model.MedicineId);
+                if (medicine == null)
+                    return RedirectToAction("AddMedicine");
+
+                string imageName = "test.img";
+                string savePath = "/MedicineImages/test.img";
+                if (model.MedicineImage != null)
+                {
+                    imageName = model.MedicineName.Replace(" ", "-") + Path.GetExtension(model.MedicineImage.FileName);
+
+                    //Get url To Save
+                    savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/MedicineImages", imageName);
+
+                    using (var stream = new FileStream(savePath, FileMode.Create))
+                    {
+                        model.MedicineImage.CopyTo(stream);
+                    }
+                }
+
+
+                _medicineService.Update(new Entities.Concrete.Medicine
+                {
+                    MedicineId = model.MedicineId,
+                    MedicineName = model.MedicineName,
+                    MedicineDefaultFrequency = model.MedicineDefaultFrequency,
+                    MedicineImagePath = model.MedicineImage == null ? medicine.MedicineImagePath : imageName
+                });
+                return RedirectToAction("AddMedicine");
             }
             catch (Exception)
             {
-                return Json(new { ok = false });
+                return View(model);
             }
         }
 
@@ -180,7 +224,8 @@ namespace Web.Controllers
             var response = new DataTablesReturnModel { draw = model.draw };
 
             var result = await _patientService.PatientsDataTable(
-                new Business.DTOS.PatientDataTablesParam { 
+                new Business.DTOS.PatientDataTablesParam
+                {
                     TextSearch = model.TextSearch,
                     OrderCol = model.order.FirstOrDefault()?.column ?? 0,
                     OrderDesc = model.order.FirstOrDefault()?.dir?.Equals("desc") ?? false,
@@ -196,7 +241,7 @@ namespace Web.Controllers
             return Json(response);
         }
 
-        public IActionResult PatientDetail([FromQuery]Guid patient)
+        public IActionResult PatientDetail([FromQuery] Guid patient)
         {
             if (patient == Guid.Empty)
                 return Redirect("/");
@@ -208,8 +253,8 @@ namespace Web.Controllers
             var glassRecord = _glassRecordService.GetAll(patient);
             var medicineList = _medicineRecordService.GetAll(patient);
             var eyePressureList = _eyePressureRecordService.GetAllPatientEyePressure(patient);
-            
-            var medicine = medicineList.Select(q => new MedicineInformation 
+
+            var medicine = medicineList.Select(q => new MedicineInformation
             {
                 MedicineName = _medicineService.Get(q.MedicineId).MedicineName,
                 MedicineFrequency = q.MedicineFrequency,

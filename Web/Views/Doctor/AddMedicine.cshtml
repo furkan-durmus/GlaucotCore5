@@ -34,25 +34,32 @@
 
         <div class="card-body">
             <div class="input-group my-1">
-                <label for="medicineName" class="col-sm-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Name</label>
-                <div class="form-div col-sm-3">
+                <label for="medicineName" class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Name</label>
+                <div class="form-div col-sm-12 col-md-4 col-lg-4">
                     <input type="text" class="form-control" id="medicineName" asp-for="MedicineName" placeholder="Medicine Name">
                 </div>
-                @*<div class="form-div col-sm-1">
+                <span asp-validation-for="MedicineName" class="text-danger mt-1 offset-2 d-inline-block"></span>
+            </div>
+            <div class="input-group my-1">
+                <label for="medicineDefaultFrequency" class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Frequency</label>
+                <div class="form-div col-sm-12 col-md-4 col-lg-4">
                     <input type="number" max="10" min="1" class="form-control" id="medicineDefaultFrequency" asp-for="medicineDefaultFrequency" placeholder="0">
                 </div>
-                <div class="form-div col-sm-4">
+                <span asp-validation-for="medicineDefaultFrequency" class="text-danger mt-1 offset-2 d-inline-block"></span>
+            </div>
+            <div class="input-group my-1">
+                <label for="medicineImage" class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Image</label>
+                <div class="form-div col-sm-12 col-md-4 col-lg-4">
                     <input type="file" class="form-control" id="medicineImage" asp-for="medicineImage" accept="image/*" placeholder="Medicine Image">
-                </div>*@
-                <div class="col-sm-2">
-                    <button type="submit" class="btn btn-warning">Save</button>
+                </div>
+                <div class="form-div col-sm-12 col-md-4 col-lg-4">
+                    <img src="" id="blobImg" style="width:150px; height:auto;"/>
+                </div>
+                <span asp-validation-for="medicineImage" class="text-danger mt-1 offset-2 d-inline-block"></span>
+            </div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-warning">Save</button>
 
-                </div>
-                <div class="col-12 mb-0">
-                    <span asp-validation-for="MedicineName" class="text-danger mt-1 offset-2 d-inline-block"></span>
-                    @*<span asp-validation-for="medicineDefaultFrequency" class="text-danger mt-1 offset-2 d-inline-block"></span>
-                    <span asp-validation-for="medicineImage" class="text-danger mt-1 offset-2 d-inline-block"></span>*@
-                </div>
             </div>
         </div>
     </div>
@@ -87,6 +94,12 @@
                             Medicine Name
                         </th>
                         <th>
+                            Frequency
+                        </th>
+                        <th>
+                            Image
+                        </th>
+                        <th>
                             Options
                         </th>
                     </tr>
@@ -97,6 +110,52 @@
         </div>
     </div>
 </form>
+
+@*<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Medicine</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="max-width:100%;">
+                    <div class="card-header">
+
+                    </div>
+
+                    <div class="card-body">
+                        <div class="input-group my-1">
+                            <label for="editMedicineName" class="col-sm-12 col-md-4 col-lg-4 mt-2 col-form-label" style="font-weight:bold;">Medicine Name</label>
+                            <div class="form-div col-sm-12 col-md-8 col-lg-8">
+                                <input type="text" class="form-control" id="editMedicineName" placeholder="Medicine Name">
+                            </div>
+                        </div>
+                        <div class="input-group my-1">
+                            <label for="editMedicineDefaultFrequency" class="col-sm-12 col-md-4 col-lg-4 mt-2 col-form-label" style="font-weight:bold;">Medicine Frequency</label>
+                            <div class="form-div col-sm-12 col-md-8 col-lg-8">
+                                <input type="number" max="10" min="1" class="form-control" id="editMedicineDefaultFrequency" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="input-group my-1">
+                            <label for="editMedicineImage" class="col-sm-12 col-md-4 col-lg-4 mt-2 col-form-label" style="font-weight:bold;">Medicine Image</label>
+                            <div class="form-div col-sm-12 col-md-8 col-lg-8">
+                                <input type="file" class="form-control" id="editMedicineImage" accept="image/*" placeholder="Medicine Image">
+                            </div>
+                            <div class="form-div col-sm-12 col-md-12 col-lg-12 text-center">
+                                <img src="" id="editBlobImg" style="width:150px; height:auto;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="editMedicineSaveBtn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>*@
 
 @section Scripts{
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/jszip-2.5.0/dt-1.10.21/b-1.6.3/b-colvis-1.6.3/b-html5-1.6.3/datatables.min.js"></script>
@@ -150,9 +209,18 @@
                         data: "medicineName"
                     },
                     {
+                        data: "medicineDefaultFrequency"
+                    },
+                    {
+                        data: "medicineImagePath",
+                        render: function (data,_,row) {
+                            return '<img src="/' + data + '" style="width:150px; height:auto;"/>';
+                        }
+                    },
+                    {
                         data: "medicineId",
                         render: function (data, _, row) {
-                            return '<button type="button" data-name="' + row.medicineName + '" data-id="' + data + '" class="btn btn-sm btn-warning m-1 editMedicine">Edit</button>' + '<button type="button" data-id="' + data + '" class="btn btn-sm btn-danger m-1 deleteMedicine">Delete</button>';
+                            return '<a href="/Doctor/EditMedicine?id='+data+'"  class="btn btn-sm btn-warning m-1">Edit</a>' + '<button type="button" data-id="' + data + '" class="btn btn-sm btn-danger m-1 deleteMedicine">Delete</button>';
                         }
                     },
 
@@ -163,48 +231,148 @@
                 dataTable.draw();
             });
 
-            $(document).on('click', '.editMedicine', function () {
-                medicineId = $(this).data("id");
-                var { value: textMedicine } = Swal.fire({
-                    title: 'Edit Medicine',
-                    input: 'text',
-                    inputLabel: 'Medicine Name',
-                    inputValue: $(this).data("name"),
-                    showCancelButton: true,
-                    inputValidator: (value) => {
-                        if (!value) {
-                            return 'You need to write something!'
-                        }
-                    }
-                });
-
-                if (textMedicine) {
-                    Swal.fire(`Your IP address is ${textMedicine}`)
+            $(document).on('change', '#medicineImage', function (e) {
+                if ($(this).val() != null && $(this).val() != "") {
+                    $('#blobImg').attr("src", URL.createObjectURL(e.target.files[0]));
+                }
+                else{
+                    $('#blobImg').attr("src", "");
                 }
             });
 
-            $(document).on('click', '.swal2-confirm', function () {
-                editName = $('#swal2-input').val();
-                $.ajax({
-                    url: "/Doctor/EditMedicine",
-                    data: { "medicineId": medicineId, "medicineName": editName },
-                    type: "POST",
-                    dataType: "JSON",
-                    success: function (result) {
-                        if (result.ok) {
-                            Swal.fire(`${editName} has been edited`);
-                            dataTable.draw();
-                        }
-                        else{
-                            Swal.fire(
-                                'ERROR',
-                                'Sometihng went wrong!',
-                                'error'
-                            )
-                        }
-                    }
-                });
+            $(document).on('change', '#editMedicineImage', function (e) {
+                if ($(this).val() != null && $(this).val() != "") {
+                    $('#editBlobImg').attr("src", URL.createObjectURL(e.target.files[0]));
+                }
+                else {
+                    $('#editBlobImg').attr("src", "");
+                }
             });
+
+            //$(document).on('click', '.editMedicine', function () {
+            //    medicineId = $(this).data("id");
+            //    $('#editMedicineName').val($(this).data("name"));
+            //    $('#editMedicineDefaultFrequency').val($(this).data("freq"));
+            //    $('#editBlobImg').attr("src", "/"+$(this).data("img"));
+            //    //var { value: textMedicine } = Swal.fire({
+            //    //    title: 'Edit Medicine',
+            //    //    input: 'text',
+            //    //    inputLabel: 'Medicine Name',
+            //    //    inputValue: $(this).data("name"),
+            //    //    showCancelButton: true,
+            //    //    inputValidator: (value) => {
+            //    //        if (!value) {
+            //    //            return 'You need to write something!'
+            //    //        }
+            //    //    }
+            //    //});
+
+            //    //if (textMedicine) {
+            //    //    Swal.fire(`Your IP address is ${textMedicine}`)
+            //    //}
+
+
+            //    //var { value: textMedicine } = Swal.fire({
+            //    //    title: 'Edit Medicine',
+            //    //    html:
+            //    //        '<input type="text" id="editMedicineName" class="swal2-input" value="' + $(this).data("name") + '"/>' +
+            //    //        '<input type="number" id="editMedicineFrequency" class="swal2-input" value="' + $(this).data("freq") + '" />' +
+            //    //        '<input type="file" id="editMedicineImage" class="swal2-input" value="' + $(this).data("img") + '">',
+            //    //    focusConfirm: false,
+            //    //    showCancelButton: true,
+            //    //    preConfirm: () => {
+            //    //        return [
+            //    //            //document.getElementById('swal-input1').value,
+            //    //            //document.getElementById('swal-input2').value
+            //    //            EditMedicineFunc()
+            //    //        ]
+            //    //    }
+            //    //})
+
+            //    //if (textMedicine) {
+            //    //    Swal.fire('ERROR','Sometihng went wrong!','error')
+            //    //}
+            //    $('#exampleModal').modal("show");
+            //});
+
+            //$(document).on('click', '#editMedicineSaveBtn', function () {
+            //    var editName = $('#editMedicineName').val();
+            //    var editFreq = $('#editMedicineDefaultFrequency').val();
+            //    //var editImage = $('#editMedicineImage').val();
+
+            //    //var input = document.getElementById("editMedicineImage");
+            //    //var files = input.files;
+            //    //var formData = new FormData();
+
+            //    //for (var i = 0; i != files.length; i++) {
+            //    //    formData.append("files", files[i]);
+            //    //}
+
+            //    if (editName == "" || editFreq == "") {
+            //        Swal.fire({
+            //            position: 'top-center',
+            //            icon: 'error',
+            //            title: 'Error',
+            //            text: 'Please fill in the blanks',
+            //            timer: 2500
+            //        });
+            //    }
+            //    else {
+            //        //editName = $('#swal2-input').val();
+
+            //        var formdata = new FormData();
+            //        var _image = $('#editMedicineImage')[0].files[0];
+            //        formdata.append('file', _image);
+
+            //        $.ajax({
+            //            url: "/Doctor/EditMedicine",
+            //            data: { "medicineId": medicineId, "medicineName": editName, "MedicineDefaultFrequency": editFreq, "MedicineImage": formdata },
+            //            type: "POST",
+            //            dataType: "JSON",
+            //            success: function (result) {
+            //                if (result.ok) {
+            //                    $('#exampleModal').modal("hide");
+            //                    Swal.fire(`${editName} has been edited`);
+            //                    dataTable.draw();
+            //                }
+            //                else {
+            //                    Swal.fire(
+            //                        'ERROR',
+            //                        'Sometihng went wrong!',
+            //                        'error'
+            //                    )
+            //                }
+            //            }
+            //        });
+            //    }
+            //});
+
+            //$(document).on('click', '.swal2-confirm', function () {
+
+            //    //editName = $('#swal2-input').val();
+            //    var editName = $('#editMedicineName').val();
+            //    var editFreq = $('#editMedicineFrequency').val();
+            //    var editImage = $('#editMedicineImage').val();
+            //    $.ajax({
+            //        url: "/Doctor/EditMedicine",
+            //        data: { "medicineId": medicineId, "medicineName": editName, "MedicineDefaultFrequency": editFreq, "MedicineImage": editImage },
+            //        type: "POST",
+            //        dataType: "JSON",
+            //        success: function (result) {
+            //            if (result.ok) {
+            //                Swal.fire(`${editName} has been edited`);
+            //                dataTable.draw();
+            //            }
+            //            else{
+            //                Swal.fire(
+            //                    'ERROR',
+            //                    'Sometihng went wrong!',
+            //                    'error'
+            //                )
+            //            }
+            //        }
+            //    });
+            //});
 
             $(document).on('click', '.deleteMedicine', function () {
                 deleteMedicineId = $(this).data("id");

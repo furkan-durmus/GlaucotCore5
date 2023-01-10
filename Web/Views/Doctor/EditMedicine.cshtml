@@ -1,0 +1,63 @@
+﻿@model Web.Models.Doctor.EditMedicineViewModel
+@{
+    ViewData["Title"] = "EditMedicine";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("EditMedicine", "Doctor", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="card" style="max-width:100%;">
+        <div class="card-header">
+            <h3>Edit Medicine</h3>
+        </div>
+
+        <div class="card-body">
+            <input type="hidden" asp-for="MedicineId" value="@Model.MedicineId"/>
+            <div class="input-group my-1">
+                <label for="medicineName" class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Name</label>
+                <div class="form-div col-sm-12 col-md-4 col-lg-4">
+                    <input type="text" class="form-control" id="medicineName" asp-for="MedicineName" placeholder="Medicine Name">
+                </div>
+                <span asp-validation-for="MedicineName" class="text-danger mt-1 offset-2 d-inline-block"></span>
+            </div>
+            <div class="input-group my-1">
+                <label for="medicineDefaultFrequency" class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Frequency</label>
+                <div class="form-div col-sm-12 col-md-4 col-lg-4">
+                    <input type="number" max="10" min="1" class="form-control" id="medicineDefaultFrequency" asp-for="MedicineDefaultFrequency" placeholder="0">
+                </div>
+                <span asp-validation-for="MedicineDefaultFrequency" class="text-danger mt-1 offset-2 d-inline-block"></span>
+            </div>
+            <div class="input-group my-1">
+                <label for="medicineImage" class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Image</label>
+                <div class="form-div col-sm-12 col-md-4 col-lg-4">
+                    <input type="file" class="form-control" id="medicineImage" asp-for="MedicineImage" accept="image/*" placeholder="Medicine Image">
+                </div>
+                <div class="form-div col-sm-12 col-md-12 col-lg-12">
+                    <img id="blobImg" src="/@Model.ImagePath" style="width:150px; height:auto;" />
+                </div>
+                <span asp-validation-for="MedicineImage" class="text-danger mt-1 offset-2 d-inline-block"></span>
+            </div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-warning">Save</button>
+
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', '#medicineImage', function (e) {
+                if ($(this).val() != null && $(this).val() != "") {
+                    $('#blobImg').attr("src", URL.createObjectURL(e.target.files[0]));
+                }
+                else {
+                    $('#blobImg').attr("src", "/"+@Model.ImagePath);
+                }
+            });
+        });
+    </script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
