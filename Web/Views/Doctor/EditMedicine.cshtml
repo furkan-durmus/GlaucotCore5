@@ -33,7 +33,7 @@
                     <input type="file" class="form-control" id="medicineImage" asp-for="MedicineImage" accept="image/*" placeholder="Medicine Image">
                 </div>
                 <div class="form-div col-sm-12 col-md-12 col-lg-12">
-                    <img id="blobImg" src="/@Model.ImagePath" style="width:150px; height:auto;" />
+                    <img id="blobImg" src="@Model.ImagePath" style="width:150px; height:auto;" />
                 </div>
                 <span asp-validation-for="MedicineImage" class="text-danger mt-1 offset-2 d-inline-block"></span>
             </div>
