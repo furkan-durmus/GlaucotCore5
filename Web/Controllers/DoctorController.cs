@@ -92,7 +92,7 @@ namespace Web.Controllers
                     return View(model);
                 }
                 string imageName = "test.png";
-                string savePath = "MedicineImages/test.png";
+                string savePath = "/MedicineImages/test.png";
                 int frequency = model.medicineDefaultFrequency == 0 ? 1 : model.medicineDefaultFrequency;
                 if (model.medicineImage != null)
                 {
