@@ -17,8 +17,11 @@
     <PackageReference Include="Hangfire" Version="1.7.32" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.32" />
     <PackageReference Include="Hangfire.Core" Version="1.7.32" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.17" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="OneSignal.RestAPIv3.Client" Version="1.2.0" />
+    <PackageReference Include="OneSignalApi" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>

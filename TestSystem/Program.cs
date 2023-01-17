@@ -9,8 +9,8 @@ namespace TestSystem
     {
         static void Main(string[] args)
         {
-            //var myTest = new SendMedicineNotification(new MedicineRecordManager(new EFMedicineRecordDal()), new HangfireErrorLogManager(new EFHangfireErrorLogDal()), new HangfireSuccessLogManager(new EFHangfireSuccessLogDal()));
-            //myTest.SendNotificationWithOneSignal();
+            var myTest = new SendMedicineNotificationWithOneSignal(new MedicineRecordManager(new EFMedicineRecordDal()), new HangfireErrorLogManager(new EFHangfireErrorLogDal()), new HangfireSuccessLogManager(new EFHangfireSuccessLogDal()));
+            myTest.SendNotificationWithOneSignal();
 
 
             //var myTest = new ClearOldDataOfSuccessHangifireLog(new HangfireSuccessLogManager(new EFHangfireSuccessLogDal()));

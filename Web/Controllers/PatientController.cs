@@ -104,6 +104,20 @@ namespace Web.Controllers
             return Ok(new { status = 1, message = _mobileHomeService.GetAllPatientDataForMobileHome(patient.PatientId) });
         }
 
+        [HttpPost("getPatientMedicineData")]
+        public IActionResult PatientMedicineData(GeneralMobilePatientRequest patient)
+        {
+
+            if (!_mobileHomeService.CheckKeyIsValid(patient.PatientId, patient.SecretKey))
+            {
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
+            }
+            if (patient.PatientNotificationToken != null)
+                _mobileHomeService.UpdatePatientNotificationToken(patient);
+
+            return Ok(new { status = 1, message = _medicineRecordService.GetAllWithDefaults(patient.PatientId) });
+        }
+
 
         [HttpPost("getallmedicines")]
         public IActionResult GetAllMedicines(GeneralMobilePatientRequest patient)

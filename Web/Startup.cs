@@ -34,6 +34,7 @@ namespace Web
         {
             services.AddRazorPages();
             services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             #region Identity
 
@@ -108,6 +109,9 @@ namespace Web
             services.AddSingleton<IMedicineService, MedicineManager>();
             services.AddSingleton<IMedicineDal, EFMedicineDal>();
 
+            services.AddSingleton<IStaticService, StaticManager>();
+            services.AddSingleton<IStaticDal, EFStaticDal>();
+
             services.AddSingleton<IRegisterService, RegisterManager>();
             services.AddSingleton<ILoginService, LoginManager>();
             services.AddSingleton<IMobileHomeService, MobileHomeManager>();
@@ -115,7 +119,7 @@ namespace Web
             services.AddHangfire(x =>
             {
                 x.UseSqlServerStorage(SelectedDatabase.LiveServerReal);
-                RecurringJob.AddOrUpdate<SendMedicineNotification>(j => j.SendNotificationWithOneSignal(), "0,30 * * * *");
+                RecurringJob.AddOrUpdate<SendMedicineNotificationWithOneSignal>(j => j.SendNotificationWithOneSignal(), "0,30 * * * *");
                 RecurringJob.AddOrUpdate<ClearOldDataOfSuccessHangifireLog>(j=>j.ClearSuccessHangifireLog(), "1,31 * * * *");
                 //RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "*/1 * * * *");
             });

@@ -14,12 +14,14 @@ namespace Business.Constants
         IPatientDal _patientDal;
         IMedicineRecordDal _medicineRecordDal;
         IGlassRecordDal _glassRecordDal;
+        IStaticDal _staticDal;
 
-        public MobileHomeManager(IPatientDal patientDal, IMedicineRecordDal medicineRecordDal, IGlassRecordDal glassRecordDal)
+        public MobileHomeManager(IPatientDal patientDal, IMedicineRecordDal medicineRecordDal, IGlassRecordDal glassRecordDal, IStaticDal staticDal)
         {
             _patientDal = patientDal;
             _medicineRecordDal = medicineRecordDal;
             _glassRecordDal = glassRecordDal;
+            _staticDal = staticDal;
         }
 
         public bool CheckKeyIsValid(Guid patientId, string key)
@@ -47,24 +49,27 @@ namespace Business.Constants
 
             Patient patientData = _patientDal.Get(p => p.PatientId == patientId);
             GlassRecord patientGlassData = _glassRecordDal.GetLastRecordOfPatient(patientId);
-            ApiHomePatientData apiHomePatientData = new();
+            ApiHomePatientData apiHomePatientData = new ApiHomePatientData();
             if (patientData != null)
             {
-                UserGeneralData userGeneralData = new UserGeneralData();
-                userGeneralData.PatientId = patientData.PatientId;
-                userGeneralData.DoctorId = patientData.DoctorId;
-                userGeneralData.PatientName = patientData.PatientName;
-                userGeneralData.PatientLastName = patientData.PatientLastName;
-                userGeneralData.PatientAge = patientData.PatientAge;
-                userGeneralData.PatientGender = patientData.PatientGender;
-                userGeneralData.PatientPhoneNumber = patientData.PatientPhoneNumber;
-                userGeneralData.PatientPhotoPath = patientData.PatientPhotoPath;
-                userGeneralData.PatientNotificationToken = patientData.PatientNotificationToken;
-                userGeneralData.IsUserActive = patientData.IsUserActive;
-                userGeneralData.IsGlassActive = patientGlassData != null ? patientGlassData.IsActive : false;
+                
+                apiHomePatientData.PatientId = patientData.PatientId;
+                apiHomePatientData.DoctorId = patientData.DoctorId;
+                apiHomePatientData.PatientName = patientData.PatientName;
+                apiHomePatientData.PatientLastName = patientData.PatientLastName;
+                apiHomePatientData.PatientAge = patientData.PatientAge;
+                apiHomePatientData.PatientGender = patientData.PatientGender;
+                apiHomePatientData.PatientPhoneNumber = patientData.PatientPhoneNumber;
+                apiHomePatientData.PatientPhotoPath = patientData.PatientPhotoPath;
+                apiHomePatientData.PatientNotificationToken = patientData.PatientNotificationToken;
+                apiHomePatientData.IsUserActive = patientData.IsUserActive;
+                apiHomePatientData.IsGlassActive = patientGlassData != null ? patientGlassData.IsActive : false;
+ 
+                List<Static> allStatics = _staticDal.GetAll();
 
-                apiHomePatientData.PatientGeneralData = userGeneralData;
-                apiHomePatientData.PatientMedicinesData = _medicineRecordDal.GetAllMedicineDataOfPatient(patientId);
+                apiHomePatientData.AndroidMobileAppVersion = allStatics.FirstOrDefault(s=>s.Id == 1).StaticValue;
+                apiHomePatientData.IosMobileAppVersion = allStatics.FirstOrDefault(s=>s.Id == 2).StaticValue;
+
             }
             return apiHomePatientData;
         }

@@ -9,18 +9,18 @@ using System.Text;
 
 namespace Web.Jobs
 {
-    public class SendMedicineNotification
+    public class SendMedicineNotificationWithFireBase
     {
         IMedicineRecordService _medicineRecordService;
         IHangfireErrorLogService _hangfireErrorLogService;
         IHangfireSuccessLogService _hangfireSuccessLogService;
-        public SendMedicineNotification(IMedicineRecordService medicineRecordService, IHangfireErrorLogService hangfireErrorLogService, IHangfireSuccessLogService hangfireSuccessLogService)
+        public SendMedicineNotificationWithFireBase(IMedicineRecordService medicineRecordService, IHangfireErrorLogService hangfireErrorLogService, IHangfireSuccessLogService hangfireSuccessLogService)
         {
             _medicineRecordService = medicineRecordService;
             _hangfireErrorLogService = hangfireErrorLogService;
             _hangfireSuccessLogService = hangfireSuccessLogService;
         }
-        public void SendNotificationWithOneSignal()
+        public void SendNotificationWithOneFireBase()
         {
 
             //DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);

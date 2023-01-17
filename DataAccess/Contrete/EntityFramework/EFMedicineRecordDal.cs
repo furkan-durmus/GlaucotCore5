@@ -38,7 +38,32 @@ namespace DataAccess.Contrete.EntityFramework
                             MedicineFrequency = medicineRecords.MedicineFrequency,
                             MedicineSideEffect = medicineRecords.MedicineSideEffect,
                             MedicineUsageRange = medicineRecords.MedicineUsageRange,
-                            MedicineUsegeTimeList =medicineRecords.MedicineUsegeTimeList
+                            MedicineUsegeTimeList =medicineRecords.MedicineUsegeTimeList,
+                            MedicineImagePath = medicines.MedicineImagePath
+                        }).ToList();
+            }
+        }
+
+        public List<PatientMedicineRecordsWithDefaults> GetAllMedicineDataOfPatientWithDefaults(Guid patientId)
+        {
+            using (GlaucotContext context = new GlaucotContext())
+            {
+                return (from medicineRecords in context.MedicineRecords
+                        join medicines in context.Medicines on medicineRecords.MedicineId equals medicines.MedicineId
+                        where medicineRecords.PatientId == patientId
+                        select new PatientMedicineRecordsWithDefaults
+                        {
+                            MedicineRecordId = medicineRecords.MedicineRecordId,
+                            MedicineId = medicineRecords.MedicineId,
+                            MedicineName = medicines.MedicineName,
+                            MedicineFrequency = medicineRecords.MedicineFrequency,
+                            MedicineSideEffect = medicineRecords.MedicineSideEffect,
+                            MedicineUsageRange = medicineRecords.MedicineUsageRange,
+                            MedicineUsegeTimeList = medicineRecords.MedicineUsegeTimeList,
+                            MedicineImagePath = medicines.MedicineImagePath,
+                            MedicineDefaultFrequency = medicines.MedicineDefaultFrequency,
+                            MedicineDefaultTimeList = medicines.medicineDefaultTimeList
+                            
                         }).ToList();
             }
         }

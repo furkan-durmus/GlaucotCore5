@@ -107,7 +107,7 @@ namespace Web.Controllers
                     }
                 }
 
-                _medicineService.Add(new Entities.Concrete.Medicine { MedicineName = model.MedicineName, MedicineDefaultFrequency = frequency, MedicineImagePath = "/MedicineImages/" + imageName });
+                _medicineService.Add(new Entities.Concrete.Medicine { MedicineName = model.MedicineName, MedicineDefaultFrequency = frequency, MedicineImagePath = "/medicineimages/" + imageName, medicineDefaultTimeList = model.medicineDefaultTimeList});
                 TempData["Result"] = "success";
             }
             catch (Exception)

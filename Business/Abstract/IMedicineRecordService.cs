@@ -10,6 +10,7 @@ namespace Business.Abstract
     public interface IMedicineRecordService
     {
         List<MedicineRecord> GetAll(Guid patientId);
+        List<PatientMedicineRecordsWithDefaults> GetAllWithDefaults(Guid patientId);
         MedicineRecord Get(int id);
         int Add(MedicineRecord medicineRecord);
         void Update(MedicineRecord medicineRecord);

@@ -25,5 +25,6 @@ namespace DataAccess.Contrete.EntityFramework
         public DbSet<EyePressureRecord> EyePressureRecords { get; set; }
         public DbSet<HangfireErrorLog> HangfireErrorLogs { get; set; }
         public DbSet<HangfireSuccessLog> HangfireSuccessLogs { get; set; }
+        public DbSet<Static> Statics { get; set; }
     }
 }

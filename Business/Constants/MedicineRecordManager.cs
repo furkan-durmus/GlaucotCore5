@@ -39,6 +39,11 @@ namespace Business.Constants
             return _medicineRecordDal.GetAll(m => m.PatientId == patientId);
         }
 
+        public List<PatientMedicineRecordsWithDefaults> GetAllWithDefaults(Guid patientId)
+        {
+            return _medicineRecordDal.GetAllMedicineDataOfPatientWithDefaults(patientId); ; 
+        }
+
         public List<NotificationMedicine> GetDataForMedicineNotification(string time)
         {
             return _medicineRecordDal.GetDataForMedicineNotification(time);

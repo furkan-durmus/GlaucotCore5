@@ -47,16 +47,41 @@
                 </div>
                 <span asp-validation-for="medicineDefaultFrequency" class="text-danger mt-1 offset-2 d-inline-block"></span>
             </div>
+
+            <input type="hidden" asp-for="medicineDefaultTimeList" value="" id="medicineDefaultTimeList" />
+            <div class="input-group my-1" id="medicineDefaultTimeListDiv" style="display:none">
+                <label for="medicineDefaultTimeList" class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Time</label>
+                <div class="form-div col-sm-12 col-md-4 col-lg-4">
+                    @for (int i = 1; i < 11; i++)
+                    {
+                        <select id="defaultTimeSelect_@(i)" selectCountOfDefaultTime="@i" style="display:none" class="selectedTimeListSelects">
+                            @for (int y = 0; y < 24; y++)
+                            {
+                                if (y < 10)
+                                {
+                                    <option value="value">0@(y):00</option>
+                                    <option value="value">0@(y):30</option>
+                                }
+                                else
+                                {
+                                    <option value="value">@(y):00</option>
+                                    <option value="value">@(y):30</option>
+                                }
+                            }
+                        </select>
+                    }
+                </div>
+              
+            </div>
             <div class="input-group my-1">
                 <label for="medicineImage" class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Image</label>
                 <div class="form-div col-sm-12 col-md-4 col-lg-4">
                     <input type="file" class="form-control" id="medicineImage" asp-for="medicineImage" accept="image/*" placeholder="Medicine Image">
                 </div>
-                <div class="form-div col-sm-12 col-md-4 col-lg-4">
-                    <img src="" id="blobImg" style="width:150px; height:auto;"/>
-                </div>
+                
                 <span asp-validation-for="medicineImage" class="text-danger mt-1 offset-2 d-inline-block"></span>
             </div>
+           
             <div class="col-sm-2">
                 <button type="submit" class="btn btn-warning">Save</button>
 
@@ -227,6 +252,37 @@
                 ]
             });
 
+            $('#medicineDefaultFrequency').on('keyup change', function (e) {
+                var selectedDefaultFrequencyCount = $("#medicineDefaultFrequency").val();
+                var selectedDefaultTimeList = "";
+
+                $("#medicineDefaultTimeListDiv").show();
+                $(".selectedTimeListSelects").attr("active", "false");
+                $(".selectedTimeListSelects").hide();
+
+                for (var i = 1; i < parseInt(selectedDefaultFrequencyCount)+1; i++) {
+                    $("#defaultTimeSelect_"+i).show();
+                    $("#defaultTimeSelect_" + i).attr("active", "true");
+                    selectedDefaultTimeList = selectedDefaultTimeList + $("#defaultTimeSelect_" + i + " option:selected").text() + "-";
+                }
+                
+                selectedDefaultTimeList = selectedDefaultTimeList.slice(0, -1);
+                $("#medicineDefaultTimeList").val(selectedDefaultTimeList);
+                console.log(selectedDefaultTimeList);
+
+            });
+
+            $('.selectedTimeListSelects').on('keyup change stylechanged', function (e) {
+                var selectedDefaultFrequencyCount = $("#medicineDefaultFrequency").val();
+                var selectedDefaultTimeList = "";
+                for (var i = 1; i < parseInt(selectedDefaultFrequencyCount)+1; i++) {
+                    selectedDefaultTimeList = selectedDefaultTimeList + $("#defaultTimeSelect_" + i +" option:selected").text() + "-";
+                }
+                selectedDefaultTimeList = selectedDefaultTimeList.slice(0, -1);
+                $("#medicineDefaultTimeList").val(selectedDefaultTimeList);
+                console.log(selectedDefaultTimeList);
+            });
+
             $("#btnSearch").click(function () {
                 dataTable.draw();
             });
@@ -248,131 +304,6 @@
                     $('#editBlobImg').attr("src", "");
                 }
             });
-
-            //$(document).on('click', '.editMedicine', function () {
-            //    medicineId = $(this).data("id");
-            //    $('#editMedicineName').val($(this).data("name"));
-            //    $('#editMedicineDefaultFrequency').val($(this).data("freq"));
-            //    $('#editBlobImg').attr("src", "/"+$(this).data("img"));
-            //    //var { value: textMedicine } = Swal.fire({
-            //    //    title: 'Edit Medicine',
-            //    //    input: 'text',
-            //    //    inputLabel: 'Medicine Name',
-            //    //    inputValue: $(this).data("name"),
-            //    //    showCancelButton: true,
-            //    //    inputValidator: (value) => {
-            //    //        if (!value) {
-            //    //            return 'You need to write something!'
-            //    //        }
-            //    //    }
-            //    //});
-
-            //    //if (textMedicine) {
-            //    //    Swal.fire(`Your IP address is ${textMedicine}`)
-            //    //}
-
-
-            //    //var { value: textMedicine } = Swal.fire({
-            //    //    title: 'Edit Medicine',
-            //    //    html:
-            //    //        '<input type="text" id="editMedicineName" class="swal2-input" value="' + $(this).data("name") + '"/>' +
-            //    //        '<input type="number" id="editMedicineFrequency" class="swal2-input" value="' + $(this).data("freq") + '" />' +
-            //    //        '<input type="file" id="editMedicineImage" class="swal2-input" value="' + $(this).data("img") + '">',
-            //    //    focusConfirm: false,
-            //    //    showCancelButton: true,
-            //    //    preConfirm: () => {
-            //    //        return [
-            //    //            //document.getElementById('swal-input1').value,
-            //    //            //document.getElementById('swal-input2').value
-            //    //            EditMedicineFunc()
-            //    //        ]
-            //    //    }
-            //    //})
-
-            //    //if (textMedicine) {
-            //    //    Swal.fire('ERROR','Sometihng went wrong!','error')
-            //    //}
-            //    $('#exampleModal').modal("show");
-            //});
-
-            //$(document).on('click', '#editMedicineSaveBtn', function () {
-            //    var editName = $('#editMedicineName').val();
-            //    var editFreq = $('#editMedicineDefaultFrequency').val();
-            //    //var editImage = $('#editMedicineImage').val();
-
-            //    //var input = document.getElementById("editMedicineImage");
-            //    //var files = input.files;
-            //    //var formData = new FormData();
-
-            //    //for (var i = 0; i != files.length; i++) {
-            //    //    formData.append("files", files[i]);
-            //    //}
-
-            //    if (editName == "" || editFreq == "") {
-            //        Swal.fire({
-            //            position: 'top-center',
-            //            icon: 'error',
-            //            title: 'Error',
-            //            text: 'Please fill in the blanks',
-            //            timer: 2500
-            //        });
-            //    }
-            //    else {
-            //        //editName = $('#swal2-input').val();
-
-            //        var formdata = new FormData();
-            //        var _image = $('#editMedicineImage')[0].files[0];
-            //        formdata.append('file', _image);
-
-            //        $.ajax({
-            //            url: "/Doctor/EditMedicine",
-            //            data: { "medicineId": medicineId, "medicineName": editName, "MedicineDefaultFrequency": editFreq, "MedicineImage": formdata },
-            //            type: "POST",
-            //            dataType: "JSON",
-            //            success: function (result) {
-            //                if (result.ok) {
-            //                    $('#exampleModal').modal("hide");
-            //                    Swal.fire(`${editName} has been edited`);
-            //                    dataTable.draw();
-            //                }
-            //                else {
-            //                    Swal.fire(
-            //                        'ERROR',
-            //                        'Sometihng went wrong!',
-            //                        'error'
-            //                    )
-            //                }
-            //            }
-            //        });
-            //    }
-            //});
-
-            //$(document).on('click', '.swal2-confirm', function () {
-
-            //    //editName = $('#swal2-input').val();
-            //    var editName = $('#editMedicineName').val();
-            //    var editFreq = $('#editMedicineFrequency').val();
-            //    var editImage = $('#editMedicineImage').val();
-            //    $.ajax({
-            //        url: "/Doctor/EditMedicine",
-            //        data: { "medicineId": medicineId, "medicineName": editName, "MedicineDefaultFrequency": editFreq, "MedicineImage": editImage },
-            //        type: "POST",
-            //        dataType: "JSON",
-            //        success: function (result) {
-            //            if (result.ok) {
-            //                Swal.fire(`${editName} has been edited`);
-            //                dataTable.draw();
-            //            }
-            //            else{
-            //                Swal.fire(
-            //                    'ERROR',
-            //                    'Sometihng went wrong!',
-            //                    'error'
-            //                )
-            //            }
-            //        }
-            //    });
-            //});
 
             $(document).on('click', '.deleteMedicine', function () {
                 deleteMedicineId = $(this).data("id");

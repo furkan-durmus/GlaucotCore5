@@ -13,5 +13,6 @@ namespace DataAccess.Abstract
         List<UserMedicinesData> GetAllMedicineDataOfPatient(Guid patientId);
         int AddWithReturnMedicineRecordId(MedicineRecord record);
         List<NotificationMedicine> GetDataForMedicineNotification(string time);
+        List<PatientMedicineRecordsWithDefaults> GetAllMedicineDataOfPatientWithDefaults(Guid patientId);
     }
 }
