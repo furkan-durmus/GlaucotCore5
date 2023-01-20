@@ -18,7 +18,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Web.Controllers
 {
-    [Authorize(Roles = "Doctor")]
+    //[Authorize(Roles = "Doctor")]
     public class DoctorController : BaseController
     {
         private readonly UserManager<DoctorUser> _userManager;
@@ -129,7 +129,8 @@ namespace Web.Controllers
                 MedicineDefaultFrequency = medicine.MedicineDefaultFrequency,
                 MedicineId = medicine.MedicineId,
                 ImagePath = medicine.MedicineImagePath,
-                MedicineName = medicine.MedicineName
+                MedicineName = medicine.MedicineName,
+                MedicineDefaultTimeList = medicine.medicineDefaultTimeList.Split('-').ToList()
             });
         }
 

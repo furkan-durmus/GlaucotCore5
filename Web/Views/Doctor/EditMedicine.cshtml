@@ -35,6 +35,29 @@
                 <div class="form-div col-sm-12 col-md-12 col-lg-12">
                     <img id="blobImg" src="@Model.ImagePath" style="width:150px; height:auto;" />
                 </div>
+                <div class="form-div col-sm-12 col-md-4 col-lg-4">
+                    <label class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label">
+                        Medicine Time List
+                    </label>
+                    @foreach (var item in Model.MedicineDefaultTimeList)
+                    {
+                        <select id="defaultTimeSelect" class="selectedTimeListSelects">
+                            @for (int y = 0; y < 24; y++)
+                            {
+                                if (y < 10)
+                                {
+                                    <option value="value" @(item == ("0" + y + ":00" ) ? "selected" : "")>0@(y):00</option>
+                                    <option value="value" @(item == ("0" + y + ":30" ) ? "selected" : "")>0@(y):30</option>
+                                }
+                                else
+                                {
+                                    <option value="value" @(item == (y + ":00" ) ? "selected" : "")>@(y):00</option>
+                                    <option value="value" @(item == (y + ":30" ) ? "selected" : "")>@(y):30</option>
+                                }
+                            }
+                        </select>
+                    }
+                </div>
                 <span asp-validation-for="MedicineImage" class="text-danger mt-1 offset-2 d-inline-block"></span>
             </div>
             <div class="col-sm-2">

@@ -192,7 +192,7 @@
             $('.medicine').addClass("active");
             var result = "@TempData["Result"]";
             if(result != null && result != "") {
-                console.log(result);
+                //console.log(result);
                 if(result == "success") {
                     Swal.fire({
                         position: 'top-center',
@@ -268,7 +268,7 @@
                 
                 selectedDefaultTimeList = selectedDefaultTimeList.slice(0, -1);
                 $("#medicineDefaultTimeList").val(selectedDefaultTimeList);
-                console.log(selectedDefaultTimeList);
+                //console.log(selectedDefaultTimeList);
 
             });
 
@@ -280,7 +280,7 @@
                 }
                 selectedDefaultTimeList = selectedDefaultTimeList.slice(0, -1);
                 $("#medicineDefaultTimeList").val(selectedDefaultTimeList);
-                console.log(selectedDefaultTimeList);
+                //console.log(selectedDefaultTimeList);
             });
 
             $("#btnSearch").click(function () {
