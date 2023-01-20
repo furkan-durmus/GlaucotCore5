@@ -18,7 +18,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Web.Controllers
 {
-    //[Authorize(Roles = "Doctor")]
+    [Authorize(Roles = "Doctor")]
     public class DoctorController : BaseController
     {
         private readonly UserManager<DoctorUser> _userManager;
@@ -160,14 +160,21 @@ namespace Web.Controllers
                         model.MedicineImage.CopyTo(stream);
                     }
                 }
-
+                string medTimelist = "";
+                foreach (var item in model.MedicineDefaultTimeList)
+                {
+                    medTimelist += item;
+                    if(model.MedicineDefaultTimeList.Last() != item)
+                        medTimelist += "-";
+                }
 
                 _medicineService.Update(new Entities.Concrete.Medicine
                 {
                     MedicineId = model.MedicineId,
                     MedicineName = model.MedicineName,
                     MedicineDefaultFrequency = model.MedicineDefaultFrequency,
-                    MedicineImagePath = model.MedicineImage == null ? medicine.MedicineImagePath : imageName
+                    MedicineImagePath = model.MedicineImage == null ? medicine.MedicineImagePath : imageName,
+                    medicineDefaultTimeList = medTimelist
                 });
                 return RedirectToAction("AddMedicine");
             }
