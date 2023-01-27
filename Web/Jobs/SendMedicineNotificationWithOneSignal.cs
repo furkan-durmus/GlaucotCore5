@@ -40,6 +40,16 @@ namespace Web.Jobs
             DateTimeOffset localServerTime = DateTimeOffset.Now;
             DateTimeOffset closestHalfOrFullTime = TimeZoneInfo.ConvertTime(localServerTime, info);
 
+
+            HangfireSuccessLog startLog = new HangfireSuccessLog();
+            startLog.NotificationDate = closestHalfOrFullTime;
+            startLog.StatusDescription = "Job Başladı";
+            startLog.StatusCode ="";
+            startLog.SResponseFromServer = "";
+            startLog.PatientPhone = "";
+
+            _hangfireSuccessLogService.SaveLogToDb(startLog);
+
             int minuteOfTime = closestHalfOrFullTime.Minute;
             if (minuteOfTime < 15)
                 closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes(-minuteOfTime).AddSeconds(-closestHalfOrFullTime.Second);
