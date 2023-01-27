@@ -11,7 +11,7 @@ namespace Entities.Concrete
     {
         public int Id { get; set; }
         public string PatientPhone { get; set; }
-        public DateTime? NotificationDate { get; set; }
+        public DateTimeOffset? NotificationDate { get; set; }
         public string? StatusCode { get; set; }
         public string? StatusDescription { get; set; }
         public string? SResponseFromServer { get; set; }

@@ -14,6 +14,6 @@ namespace Entities.Concrete
         public string? LogInnerException { get; set; }
         public string? LogSource { get; set; }
         public string? LogStackTrace { get; set; }
-        public DateTime LogTime { get; set; }
+        public DateTimeOffset LogTime { get; set; }
     }
 }

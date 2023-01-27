@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{071F884F-B3B7-4B35-8BBC-5F780C7D22FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business", "Business\Business.csproj", "{071F884F-B3B7-4B35-8BBC-5F780C7D22FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AF9B78D8-7836-4280-A9F9-E5D7AFA98194}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{AF9B78D8-7836-4280-A9F9-E5D7AFA98194}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{D29F185E-C629-4DED-8C4C-FDADE2688A33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{D29F185E-C629-4DED-8C4C-FDADE2688A33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{ADD043B0-C65A-4E6C-895C-703E93A8595F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{ADD043B0-C65A-4E6C-895C-703E93A8595F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSystem", "TestSystem\TestSystem.csproj", "{91D8C286-47AA-4D2F-9909-092B9B8237F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSystem", "TestSystem\TestSystem.csproj", "{91D8C286-47AA-4D2F-9909-092B9B8237F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{4AE8347F-DC07-4A13-99EE-EC5EAF5C79F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{4AE8347F-DC07-4A13-99EE-EC5EAF5C79F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

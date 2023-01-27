@@ -24,11 +24,11 @@ namespace Web.Jobs
         {
 
             //DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);
-            //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 11:01:05 AM").AddHours(10);
+            DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 11:01:05 AM");
 
-            var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
-            DateTimeOffset localServerTime = DateTimeOffset.Now;
-            DateTimeOffset closestHalfOrFullTime = TimeZoneInfo.ConvertTime(localServerTime, info);
+            //var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
+            //DateTimeOffset localServerTime = DateTimeOffset.Now;
+            //DateTimeOffset closestHalfOrFullTime = TimeZoneInfo.ConvertTime(localServerTime, info);
 
             int minuteOfTime = closestHalfOrFullTime.Minute;
             if (minuteOfTime < 15)
