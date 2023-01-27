@@ -52,6 +52,15 @@
                             {
                                 if (y < 10)
                                 {
+
+                                    <!option value="value" @(item == ("0" + y + ":00" ) ? "selected" : "")>0@(y):00</!option>
+                                    <!option value="value" @(item == ("0" + y + ":30" ) ? "selected" : "")>0@(y):30</!option>
+                                }
+                                else
+                                {
+                                    <!option value="value" @(item == (y + ":00" ) ? "selected" : "")>@(y):00</!option>
+                                    <!option value="value" @(item == (y + ":30" ) ? "selected" : "")>@(y):30</!option>
+
                                     bool slctdFull = item == ("0" + y + ":00");
                                     bool slctdHalf = item == ("0" + y + ":30");
                                     if (slctdFull)
@@ -91,6 +100,7 @@
                                     {
                                         <option value="value">@(y):30</option>
                                     }
+
                                 }
                             }
                         </select>
@@ -106,7 +116,10 @@
 
 @section Scripts{
     <script>
+        console.log("ASDASDASDASD");
+        alert("qweqwe");
         $(document).ready(function () {
+            console.log("ASDASDASDASD");
             $(document).on('change', '#medicineImage', function (e) {
                 if ($(this).val() != null && $(this).val() != "") {
                     $('#blobImg').attr("src", URL.createObjectURL(e.target.files[0]));
