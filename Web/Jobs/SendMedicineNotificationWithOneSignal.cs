@@ -4,14 +4,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using RestSharp;
-<<<<<<< HEAD
-using System.Collections;
-=======
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
->>>>>>> 2945eef25bddd081d5973774bdb10c133f498c55
-using System.Linq;
 
 namespace Web.Jobs
 {
@@ -123,27 +118,11 @@ namespace Web.Jobs
 
                         request.AddParameter("application/json", serilizedRequestData, ParameterType.RequestBody);
                         IRestResponse response = client.Execute(request);
-<<<<<<< HEAD
                         Console.WriteLine(response.Content);
 
-=======
-                        if (response.StatusCode==HttpStatusCode.OK)
-                        {
-                            HangfireSuccessLog hangfireSuccessLog = new HangfireSuccessLog();
-                            hangfireSuccessLog.NotificationDate = closestHalfOrFullTime;
-                            hangfireSuccessLog.StatusDescription = response.ResponseStatus.ToString();
-                            hangfireSuccessLog.StatusCode = response.StatusCode.ToString();
-                            hangfireSuccessLog.SResponseFromServer = response.Content;
-                            hangfireSuccessLog.PatientPhone = notificationData.PatientPhoneNumber;
 
-                            _hangfireSuccessLogService.SaveLogToDb(hangfireSuccessLog);
-                        }
-                        else
-                        {
-                            patientsDataForNotification.Remove(patientsDataForNotification.Single(p=>p.PatientPhoneNumber == notificationData.PatientPhoneNumber));
-                            throw new ArgumentOutOfRangeException(response.Content, notificationData.PatientPhoneNumber);
-                        }
->>>>>>> 2945eef25bddd081d5973774bdb10c133f498c55
+
+
                     }
                     break;
                 }
