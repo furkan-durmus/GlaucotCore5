@@ -52,6 +52,9 @@
                             {
                                 if (y < 10)
                                 {
+                                    <!option value="value" @(item == (y + ":00" ) ? "selected" : "")>@(y):00</!option>
+                                    <!option value="value" @(item == (y + ":30" ) ? "selected" : "")>@(y):30</!option>
+
                                     bool slctdFull = item == ("0" + y + ":00");
                                     bool slctdHalf = item == ("0" + y + ":30");
                                     if (slctdFull)
@@ -91,6 +94,7 @@
                                     {
                                         <option value="value">@(y):30</option>
                                     }
+
                                 }
                             }
                         </select>

@@ -4,7 +4,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using RestSharp;
+<<<<<<< HEAD
 using System.Collections;
+=======
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
+>>>>>>> 2945eef25bddd081d5973774bdb10c133f498c55
 using System.Linq;
 
 namespace Web.Jobs
@@ -27,11 +33,21 @@ namespace Web.Jobs
         {
 
             //DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);
-            //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 17:01:05");
+            //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 11:01:05");
 
             var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
             DateTimeOffset localServerTime = DateTimeOffset.Now;
             DateTimeOffset closestHalfOrFullTime = TimeZoneInfo.ConvertTime(localServerTime, info);
+
+
+            HangfireSuccessLog startLog = new HangfireSuccessLog();
+            startLog.NotificationDate = closestHalfOrFullTime;
+            startLog.StatusDescription = "Job Başladı";
+            startLog.StatusCode ="";
+            startLog.SResponseFromServer = "";
+            startLog.PatientPhone = "";
+
+            _hangfireSuccessLogService.SaveLogToDb(startLog);
 
             int minuteOfTime = closestHalfOrFullTime.Minute;
             if (minuteOfTime < 15)
@@ -49,7 +65,7 @@ namespace Web.Jobs
 
             var attemp = 0;
 
-            while (attemp < 3)
+            while (attemp < 3 && patientsDataForNotification.Count>0)
             {
                 try
                 {
@@ -107,20 +123,41 @@ namespace Web.Jobs
 
                         request.AddParameter("application/json", serilizedRequestData, ParameterType.RequestBody);
                         IRestResponse response = client.Execute(request);
+<<<<<<< HEAD
                         Console.WriteLine(response.Content);
 
+=======
+                        if (response.StatusCode==HttpStatusCode.OK)
+                        {
+                            HangfireSuccessLog hangfireSuccessLog = new HangfireSuccessLog();
+                            hangfireSuccessLog.NotificationDate = closestHalfOrFullTime;
+                            hangfireSuccessLog.StatusDescription = response.ResponseStatus.ToString();
+                            hangfireSuccessLog.StatusCode = response.StatusCode.ToString();
+                            hangfireSuccessLog.SResponseFromServer = response.Content;
+                            hangfireSuccessLog.PatientPhone = notificationData.PatientPhoneNumber;
+
+                            _hangfireSuccessLogService.SaveLogToDb(hangfireSuccessLog);
+                        }
+                        else
+                        {
+                            patientsDataForNotification.Remove(patientsDataForNotification.Single(p=>p.PatientPhoneNumber == notificationData.PatientPhoneNumber));
+                            throw new ArgumentOutOfRangeException(response.Content, notificationData.PatientPhoneNumber);
+                        }
+>>>>>>> 2945eef25bddd081d5973774bdb10c133f498c55
                     }
                     break;
                 }
                 catch (Exception e)
                 {
-                    attemp = +1;
+                 
+                    attemp = attemp + 1;
+
                     HangfireErrorLog hangfireErrorLog = new();
                     hangfireErrorLog.LogSource = e?.Source;
                     hangfireErrorLog.LogMessage = e?.Message;
                     hangfireErrorLog.LogStackTrace = e?.StackTrace;
                     hangfireErrorLog.LogInnerException = e.InnerException?.Message;
-                    hangfireErrorLog.LogTime = DateTime.Now;
+                    hangfireErrorLog.LogTime = closestHalfOrFullTime;
                     _hangfireErrorLogService.SaveLogToDb(hangfireErrorLog);
                 }
             }

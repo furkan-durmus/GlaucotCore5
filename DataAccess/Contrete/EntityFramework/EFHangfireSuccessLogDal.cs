@@ -23,13 +23,22 @@ namespace DataAccess.Contrete.EntityFramework
 
             using (GlaucotContext context = new GlaucotContext())
             {
-                var myEntity = (from hangfireSuccessLogs in context.HangfireSuccessLogs
+                var myEntitySuccess = (from hangfireSuccessLogs in context.HangfireSuccessLogs
                                where hangfireSuccessLogs.NotificationDate < LastTime
                                 select hangfireSuccessLogs).ToList();
 
-                foreach (var successLog in myEntity)
+                foreach (var successLog in myEntitySuccess)
                 {
                     context.HangfireSuccessLogs.Remove(successLog);
+                }
+
+                var myEntityError = (from HangfireErrorLog in context.HangfireErrorLogs
+                                     where HangfireErrorLog.LogTime < LastTime
+                                select HangfireErrorLog).ToList();
+
+                foreach (var errorLog in myEntityError)
+                {
+                    context.HangfireErrorLogs.Remove(errorLog);
                 }
                 
                 context.SaveChanges();

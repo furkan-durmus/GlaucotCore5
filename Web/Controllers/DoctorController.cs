@@ -18,7 +18,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Web.Controllers
 {
-    [Authorize(Roles = "Doctor")]
+    //[Authorize(Roles = "Doctor")]
     public class DoctorController : BaseController
     {
         private readonly UserManager<DoctorUser> _userManager;
