@@ -11,6 +11,7 @@ namespace Entities.Concrete
         public string app_id { get; set; }
         public List<string> include_player_ids { get; set; }
         public Dictionary<string,string> contents { get; set; }
+        public Dictionary<string,string> data { get; set; }
         public Dictionary<string,string> headings { get; set; }
         public List<Dictionary<string,string>> buttons { get; set; }
         public string name { get; set; }
@@ -18,6 +19,7 @@ namespace Entities.Concrete
         public int priority { get; set; }
         public bool content_available { get; set; }
         public int ttl { get; set; }
+
 
 
     }

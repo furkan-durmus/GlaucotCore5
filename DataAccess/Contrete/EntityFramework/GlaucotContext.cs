@@ -26,5 +26,6 @@ namespace DataAccess.Contrete.EntityFramework
         public DbSet<HangfireErrorLog> HangfireErrorLogs { get; set; }
         public DbSet<HangfireSuccessLog> HangfireSuccessLogs { get; set; }
         public DbSet<Static> Statics { get; set; }
+        public DbSet<NotificationRecord> NotificationRecords { get; set; }
     }
 }

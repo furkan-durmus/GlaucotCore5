@@ -112,6 +112,9 @@ namespace Web
             services.AddSingleton<IStaticService, StaticManager>();
             services.AddSingleton<IStaticDal, EFStaticDal>();
 
+            services.AddSingleton<INotificationRecordService, NotificationRecordManager>();
+            services.AddSingleton<INotificationRecordDal, EFNotificationRecodDal>();
+
             services.AddSingleton<IRegisterService, RegisterManager>();
             services.AddSingleton<ILoginService, LoginManager>();
             services.AddSingleton<IMobileHomeService, MobileHomeManager>();
@@ -122,6 +125,25 @@ namespace Web
                 RecurringJob.AddOrUpdate<SendMedicineNotificationWithOneSignal>(j => j.SendNotificationWithOneSignal(), "0,30 * * * *");
                 RecurringJob.AddOrUpdate<ClearOldDataOfSuccessHangifireLog>(j=>j.ClearSuccessHangifireLog(), "1,31 * * * *");
                 //RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "*/1 * * * *");
+
+
+
+                // buraya da yeni bir job tanýmlanacak. her 15 ve 45. dakikalarda çalýþacak bir ilaç hatýrlatma bildirimi job'u
+
+
+
+
+
+                // ilk baþta database'deki tüm verileri çekecek.
+                // status 0 ve createDate'i þu an ki zamandan 6dk dan daha büyükse cycle'ý 5'ten küçükse (bu 3 durum saðlanýyorsa) send notification'daki iþlemler tekranlanacak
+
+
+
+
+
+
+
+
             });
 
             services.AddHangfireServer();

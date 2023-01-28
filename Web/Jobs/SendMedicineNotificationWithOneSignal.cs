@@ -1,20 +1,11 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
-using OneSignalApi.Api;
-using OneSignalApi.Client;
-using OneSignalApi.Model;
-using System.Threading.Tasks;
 using RestSharp;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
+using System.Collections;
+using System.Linq;
 
 namespace Web.Jobs
 {
@@ -23,10 +14,13 @@ namespace Web.Jobs
         IMedicineRecordService _medicineRecordService;
         IHangfireErrorLogService _hangfireErrorLogService;
         IHangfireSuccessLogService _hangfireSuccessLogService;
-        public SendMedicineNotificationWithOneSignal(IMedicineRecordService medicineRecordService, IHangfireErrorLogService hangfireErrorLogService, IHangfireSuccessLogService hangfireSuccessLogService)
+        private readonly INotificationRecordService _notificationRecordService;
+
+        public SendMedicineNotificationWithOneSignal(IMedicineRecordService medicineRecordService, IHangfireErrorLogService hangfireErrorLogService, INotificationRecordService notificationRecordService, IHangfireSuccessLogService hangfireSuccessLogService)
         {
             _medicineRecordService = medicineRecordService;
             _hangfireErrorLogService = hangfireErrorLogService;
+            _notificationRecordService = notificationRecordService;
             _hangfireSuccessLogService = hangfireSuccessLogService;
         }
         public void SendNotificationWithOneSignal()
@@ -61,7 +55,6 @@ namespace Web.Jobs
                 {
                     foreach (var notificationData in patientsDataForNotification)
                     {
-
                         List<string> users = new List<string>();
                         users.Add(notificationData.PatientNotificationToken);
 
@@ -77,6 +70,20 @@ namespace Web.Jobs
                         headings.Add("en", $"Glaucot Medicine Reminder");
                         headings.Add("tr", $"Glaucot İlaç Hatırlatıcı");
 
+                        int notificationRecordId = _notificationRecordService.AddNotificationRecord(new NotificationRecord
+                        {
+                            Cycle = 0,
+                            Status = Core.NotificationRecordStatus.None,
+                            Content = string.Join("-", contents),   // [en, It's qwe, time to get asd]-[tr, Saat qwe, asd kullanmayı unutma.]
+                            Title = string.Join("-", headings),   // [en, Glaucot Medicine Reminder]-[tr, Glaucot İlaç Hatırlatıcı]
+                            CreateDate = DateTime.Now,
+                            PatientId = Guid.Parse(users.First()),
+                            Token = notificationData.PatientNotificationToken
+                        });
+
+                        Dictionary<string, string> notificationRecordData = new Dictionary<string, string>();
+                        headings.Add("notificationRecordId", $"{notificationRecordId}");
+                        headings.Add("patientId", $"{users.First()}");
 
                         OneSignalNotification oneSignalNotification = new OneSignalNotification();
                         oneSignalNotification.app_id = "f196579d-dc71-404a-9d92-c5311836d8c1";
@@ -89,6 +96,7 @@ namespace Web.Jobs
                         oneSignalNotification.content_available = true;
                         oneSignalNotification.android_channel_id = "9113e0b5-9b25-46c3-8abe-f56ba4827261";
                         oneSignalNotification.headings = headings;
+                        oneSignalNotification.data = notificationRecordData;
 
                         string serilizedRequestData = JsonConvert.SerializeObject(oneSignalNotification);
 
@@ -100,9 +108,6 @@ namespace Web.Jobs
                         request.AddParameter("application/json", serilizedRequestData, ParameterType.RequestBody);
                         IRestResponse response = client.Execute(request);
                         Console.WriteLine(response.Content);
-
-
-
 
                     }
                     break;
