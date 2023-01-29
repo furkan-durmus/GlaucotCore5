@@ -7,6 +7,7 @@ using RestSharp;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
+using System.Linq;
 
 namespace Web.Jobs
 {
