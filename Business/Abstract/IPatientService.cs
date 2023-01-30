@@ -16,6 +16,7 @@ namespace Business.Abstract
         void Update(Patient patient);
         void Delete(Patient patient);
         Task<PagingModelResponse<Patient>> PatientsDataTable(PatientDataTablesParam model);
+        void SetPatientTimeDifference(Guid patientId, int timeDifference);
 
     }
 }

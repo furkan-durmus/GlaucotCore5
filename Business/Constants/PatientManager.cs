@@ -60,6 +60,17 @@ namespace Business.Constants
             };
         }
 
+        public void SetPatientTimeDifference(Guid patientId, int timeDifference)
+        {
+            var patient = _patientDal.Get(q => q.PatientId == patientId);
+
+            if (patient != null)
+            {
+                patient.PatientTimeDifference = timeDifference;
+                _patientDal.Update(patient);
+            }
+        }
+
         public void Update(Patient patient)
         {
             _patientDal.Update(patient);

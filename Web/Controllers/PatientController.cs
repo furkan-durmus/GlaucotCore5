@@ -102,6 +102,8 @@ namespace Web.Controllers
             }
             if (patient.PatientNotificationToken != null)
                 _mobileHomeService.UpdatePatientNotificationToken(patient);
+            if (patient.PatientTimeDifference != null)
+                _patientService.SetPatientTimeDifference(patient.PatientId,patient.PatientTimeDifference ?? 0);
 
             return Ok(new { status = 1, message = _mobileHomeService.GetAllPatientDataForMobileHome(patient.PatientId) });
         }
@@ -234,7 +236,7 @@ namespace Web.Controllers
 
 
             _eyePressureRecordService.AddPatientEyePressure(eyePressureRecord);
-            return Ok(new { status =  1, message = "Göz Tansiyon Kaydı Başarılı" });
+            return Ok(new { status = 1, message = "Göz Tansiyon Kaydı Başarılı" });
         }
 
 
@@ -279,10 +281,11 @@ namespace Web.Controllers
             {
                 return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
             }
+
             bool isSucceed = false;
             if (model.NotificationRecordType == Core.NotificationRecordType.Approve)
                 isSucceed = _notificationRecordService.ApproveNotificationRecord(model.NotificationRecordId);
-            if(model.NotificationRecordType == Core.NotificationRecordType.Delay)
+            if (model.NotificationRecordType == Core.NotificationRecordType.Delay)
                 isSucceed = _notificationRecordService.DelayNotificationRecord(model.NotificationRecordId);
 
             if (!isSucceed)
