@@ -82,7 +82,7 @@ namespace DataAccess.Contrete.EntityFramework
                             PatientNotificationToken = patients.PatientNotificationToken,
                             CurrentTime=time,
                             PatientPhoneNumber=patients.PatientPhoneNumber,
-
+                            PatientId = patients.PatientId
                         }).ToList();
             }
         }

@@ -124,7 +124,7 @@ namespace Web
                 x.UseSqlServerStorage(SelectedDatabase.LiveServerReal);
                 RecurringJob.AddOrUpdate<SendMedicineNotificationWithOneSignal>(j => j.SendNotificationWithOneSignal(), "0,30 * * * *");
                 RecurringJob.AddOrUpdate<ClearOldDataOfSuccessHangifireLog>(j=>j.ClearSuccessHangifireLog(), "1,31 * * * *");
-                //RecurringJob.AddOrUpdate<SendMedicineNotification>(j=>j.SendNotificationWithOneSignal(), "*/1 * * * *");
+                RecurringJob.AddOrUpdate<CheckNotificationRecords>(j=>j.CheckNotification(), "15,45 * * * *");
 
 
 

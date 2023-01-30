@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Entities.Concrete
 {
-    public class NotificationMedicine
+    public class NotificationRecordRequest
     {
         public Guid PatientId { get; set; }
-        public string MedicineName { get; set; }
-        public string PatientNotificationToken { get; set; }
         public string PatientPhoneNumber { get; set; }
-        public string CurrentTime { get; set; }
+        public string SecretKey { get; set; }
+        public int NotificationRecordId { get; set; }
     }
 }

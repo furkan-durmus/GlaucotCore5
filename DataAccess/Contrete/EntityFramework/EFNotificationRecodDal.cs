@@ -22,5 +22,13 @@ namespace DataAccess.Contrete.EntityFramework
                 return record.NotificationRecordId;
             }
         }
+
+        public List<NotificationRecord> GetDoneNotifications()
+        {
+            using (GlaucotContext context = new GlaucotContext())
+            {
+                return context.Set<NotificationRecord>().Where(q => q.Status == Core.NotificationRecordStatus.Done).ToList();
+            }
+        }
     }
 }

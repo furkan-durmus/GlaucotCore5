@@ -10,5 +10,9 @@ namespace Business.Abstract
     public interface INotificationRecordService
     {
         int AddNotificationRecord(NotificationRecord record);
+        void RemoveNotificationRecords();
+        List<NotificationRecord> GetAllSendNotifications();
+        bool ApproveNotificationRecord(int notificationRecordId);
+        bool DelayNotificationRecord(int notificationRecordId);
     }
 }

@@ -1,51 +1,42 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Hangfire;
+using Microsoft.AspNetCore.Diagnostics;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using RestSharp;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
-using System.Linq;
+using System.Collections.Generic;
 using System.Net;
+using System;
+using System.Linq;
 
 namespace Web.Jobs
 {
-    public class SendMedicineNotificationWithOneSignal
+    public class CheckNotificationRecords
     {
-        IMedicineRecordService _medicineRecordService;
-        IHangfireErrorLogService _hangfireErrorLogService;
-        IHangfireSuccessLogService _hangfireSuccessLogService;
+        private readonly IMedicineRecordService _medicineRecordService;
         private readonly INotificationRecordService _notificationRecordService;
-
-        public SendMedicineNotificationWithOneSignal(IMedicineRecordService medicineRecordService, IHangfireErrorLogService hangfireErrorLogService, INotificationRecordService notificationRecordService, IHangfireSuccessLogService hangfireSuccessLogService)
+        private readonly IHangfireErrorLogService _hangfireErrorLogService;
+        private readonly IHangfireSuccessLogService _hangfireSuccessLogService;
+        public CheckNotificationRecords(INotificationRecordService notificationRecordService, IHangfireErrorLogService hangfireErrorLogService, IHangfireSuccessLogService hangfireSuccessLogService, IMedicineRecordService medicineRecordService)
         {
-            _medicineRecordService = medicineRecordService;
-            _hangfireErrorLogService = hangfireErrorLogService;
             _notificationRecordService = notificationRecordService;
+            _hangfireErrorLogService = hangfireErrorLogService;
             _hangfireSuccessLogService = hangfireSuccessLogService;
+            _medicineRecordService = medicineRecordService;
         }
-        public void SendNotificationWithOneSignal()
+
+        public void CheckNotification()
         {
+            _notificationRecordService.RemoveNotificationRecords();
+
+            var notificationRecordList = _notificationRecordService.GetAllSendNotifications();
 
             //DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);
             //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 11:01:05");
-
             var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
             DateTimeOffset localServerTime = DateTimeOffset.Now;
             DateTimeOffset closestHalfOrFullTime = TimeZoneInfo.ConvertTime(localServerTime, info);
-
-
-            HangfireSuccessLog startLog = new HangfireSuccessLog();
-            startLog.NotificationDate = closestHalfOrFullTime;
-            startLog.StatusDescription = "Job Başladı";
-            startLog.StatusCode ="";
-            startLog.SResponseFromServer = "";
-            startLog.PatientPhone = "";
-
-            _hangfireSuccessLogService.SaveLogToDb(startLog);
-
             int minuteOfTime = closestHalfOrFullTime.Minute;
             if (minuteOfTime < 15)
                 closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes(-minuteOfTime).AddSeconds(-closestHalfOrFullTime.Second);
@@ -55,48 +46,42 @@ namespace Web.Jobs
                 closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes(-(minuteOfTime - 30)).AddSeconds(-closestHalfOrFullTime.Second);
             else
                 closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes((60 - minuteOfTime)).AddSeconds(-closestHalfOrFullTime.Second);
+            HangfireSuccessLog startLog = new HangfireSuccessLog();
+            startLog.NotificationDate = closestHalfOrFullTime;
+            startLog.StatusDescription = "NotifRecord Job Başladı";
+            startLog.StatusCode = "";
+            startLog.SResponseFromServer = "";
+            startLog.PatientPhone = "";
+
+            _hangfireSuccessLogService.SaveLogToDb(startLog);
 
             string myExactTime = closestHalfOrFullTime.ToString("HH:mm");
-
             List<NotificationMedicine> patientsDataForNotification = _medicineRecordService.GetDataForMedicineNotification(myExactTime);
 
-            var attemp = 0;
-
-            while (attemp < 3 && patientsDataForNotification.Count>0)
+            foreach ( var notification in notificationRecordList)
             {
-                try
+                var patientData = patientsDataForNotification.Where(q => q.PatientId == notification.PatientId).FirstOrDefault();
+
+                var attemp = 0;
+
+                while (attemp < 3)
                 {
-                    foreach (var notificationData in patientsDataForNotification)
+                    try
                     {
                         List<string> users = new List<string>();
-                        users.Add(notificationData.PatientNotificationToken);
+                        users.Add(notification.Token);
 
                         List<Dictionary<string, string>> buttons = new List<Dictionary<string, string>>();
                         buttons.Add(new Dictionary<string, string>() { { "id", "id_confirm" }, { "text", "Onayla" }, });
                         buttons.Add(new Dictionary<string, string>() { { "id", "id_delay" }, { "text", "Ertele" }, });
 
                         Dictionary<string, string> contents = new Dictionary<string, string>();
-                        contents.Add("en", $"It's {notificationData.CurrentTime}, time to get {notificationData.MedicineName}");
-                        contents.Add("tr", $"Saat {notificationData.CurrentTime}, {notificationData.MedicineName} kullanmayı unutma.");
+                        contents.Add("en", $"It's {patientData.CurrentTime}, time to get {patientData.MedicineName}");
+                        contents.Add("tr", $"Saat {patientData.CurrentTime}, {patientData.MedicineName} kullanmayı unutma.");
 
                         Dictionary<string, string> headings = new Dictionary<string, string>();
                         headings.Add("en", $"Glaucot Medicine Reminder");
                         headings.Add("tr", $"Glaucot İlaç Hatırlatıcı");
-
-                        int notificationRecordId = _notificationRecordService.AddNotificationRecord(new NotificationRecord
-                        {
-                            Cycle = 0,
-                            Status = Core.NotificationRecordStatus.None,
-                            Content = string.Join("-", contents),   // [en, It's qwe, time to get asd]-[tr, Saat qwe, asd kullanmayı unutma.]
-                            Title = string.Join("-", headings),   // [en, Glaucot Medicine Reminder]-[tr, Glaucot İlaç Hatırlatıcı]
-                            CreateDate = DateTime.Now,
-                            PatientId = notificationData.PatientId,
-                            Token = notificationData.PatientNotificationToken
-                        });
-
-                        Dictionary<string, string> notificationRecordData = new Dictionary<string, string>();
-                        headings.Add("notificationRecordId", $"{notificationRecordId}");
-                        headings.Add("patientId", $"{users.First()}");
 
                         OneSignalNotification oneSignalNotification = new OneSignalNotification();
                         oneSignalNotification.app_id = "f196579d-dc71-404a-9d92-c5311836d8c1";
@@ -109,7 +94,6 @@ namespace Web.Jobs
                         oneSignalNotification.content_available = true;
                         oneSignalNotification.android_channel_id = "9113e0b5-9b25-46c3-8abe-f56ba4827261";
                         oneSignalNotification.headings = headings;
-                        oneSignalNotification.data = notificationRecordData;
 
                         string serilizedRequestData = JsonConvert.SerializeObject(oneSignalNotification);
 
@@ -128,34 +112,30 @@ namespace Web.Jobs
                             hangfireSuccessLog.StatusDescription = "CANLI - SUCCESS";
                             hangfireSuccessLog.StatusCode = response.StatusCode.ToString();
                             hangfireSuccessLog.SResponseFromServer = response.Content;
-                            hangfireSuccessLog.PatientPhone = notificationData.PatientPhoneNumber;
+                            hangfireSuccessLog.PatientPhone = patientData.PatientPhoneNumber;
 
                             _hangfireSuccessLogService.SaveLogToDb(hangfireSuccessLog);
                         }
                         else
                         {
-                            patientsDataForNotification.Remove(patientsDataForNotification.Single(p => p.PatientPhoneNumber == notificationData.PatientPhoneNumber));
-                            throw new ArgumentOutOfRangeException(response.Content, notificationData.PatientPhoneNumber);
+                            patientsDataForNotification.Remove(patientsDataForNotification.Single(p => p.PatientPhoneNumber == patientData.PatientPhoneNumber));
+                            throw new ArgumentOutOfRangeException(response.Content, patientData.PatientPhoneNumber);
                         }
                     }
-                    break;
+                    catch (Exception e)
+                    {
+                        attemp = attemp + 1;
+
+                        HangfireErrorLog hangfireErrorLog = new();
+                        hangfireErrorLog.LogSource = e?.Source;
+                        hangfireErrorLog.LogMessage = e?.Message;
+                        hangfireErrorLog.LogStackTrace = e?.StackTrace;
+                        hangfireErrorLog.LogInnerException = e.InnerException?.Message;
+                        hangfireErrorLog.LogTime = closestHalfOrFullTime;
+                        _hangfireErrorLogService.SaveLogToDb(hangfireErrorLog);
+                    }
                 }
-                catch (Exception e)
-                {
-                 
-                    attemp = attemp + 1;
-
-                    HangfireErrorLog hangfireErrorLog = new();
-                    hangfireErrorLog.LogSource = e?.Source;
-                    hangfireErrorLog.LogMessage = e?.Message;
-                    hangfireErrorLog.LogStackTrace = e?.StackTrace;
-                    hangfireErrorLog.LogInnerException = e.InnerException?.Message;
-                    hangfireErrorLog.LogTime = closestHalfOrFullTime;
-                    _hangfireErrorLogService.SaveLogToDb(hangfireErrorLog);
-                }
-            }
-
-
+            }            
         }
     }
 }

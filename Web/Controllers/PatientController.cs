@@ -20,7 +20,8 @@ namespace Web.Controllers
         IMedicineService _medicineService;
         IMedicineRecordService _medicineRecordService;
         IEyePressureRecordService _eyePressureRecordService;
-        public PatientController(IPatientService patientService, IRegisterService registerService, ILoginService loginService, IMobileHomeService mobileHomeService, IOTPService otpService, IGlassRecordService glassRecordService, IMedicineService medicineService, IMedicineRecordService medicineRecordService, IEyePressureRecordService eyePressureRecordService)
+        INotificationRecordService _notificationRecordService;
+        public PatientController(IPatientService patientService, IRegisterService registerService, ILoginService loginService, IMobileHomeService mobileHomeService, IOTPService otpService, IGlassRecordService glassRecordService, IMedicineService medicineService, IMedicineRecordService medicineRecordService, IEyePressureRecordService eyePressureRecordService, INotificationRecordService notificationRecordService)
         {
             _patientService = patientService;
             _registerService = registerService;
@@ -31,6 +32,7 @@ namespace Web.Controllers
             _medicineService = medicineService;
             _medicineRecordService = medicineRecordService;
             _eyePressureRecordService = eyePressureRecordService;
+            _notificationRecordService = notificationRecordService;
         }
 
         [HttpPost("register")]
@@ -264,6 +266,47 @@ namespace Web.Controllers
             return Ok(new { status = 1, message = userOTPData.OTPCode });
         }
 
+        [HttpPost("approvenotificationrecord")]
+        public IActionResult ApproveNotificationRecord(NotificationRecordRequest model)
+        {
 
+            if (_registerService.CheckPhoneIsExist(model.PatientPhoneNumber))
+            {
+                return Ok(new { status = 0, message = $"Bu telefon numarası ile kayıtlı bir hesabınız bulunuyor." });
+            }
+
+            if (!_mobileHomeService.CheckKeyIsValid(model.PatientId, model.SecretKey))
+            {
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
+            }
+
+            bool isSucceed = _notificationRecordService.ApproveNotificationRecord(model.NotificationRecordId);
+
+            if(!isSucceed)
+                return Ok(new { status = -99, message = $"Kayıt bulunamadı" });
+
+            return Ok(new { status = 1, message = "İşlem başarılı" });
+        }
+
+        [HttpPost("delaynotificationrecord")]
+        public IActionResult DelayNotificationRecord(NotificationRecordRequest model)
+        {
+            if (_registerService.CheckPhoneIsExist(model.PatientPhoneNumber))
+            {
+                return Ok(new { status = 0, message = $"Bu telefon numarası ile kayıtlı bir hesabınız bulunuyor." });
+            }
+
+            if (!_mobileHomeService.CheckKeyIsValid(model.PatientId, model.SecretKey))
+            {
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
+            }
+
+            bool isSucceed = _notificationRecordService.DelayNotificationRecord(model.NotificationRecordId);
+
+            if (!isSucceed)
+                return Ok(new { status = -99, message = $"Kayıt bulunamadı" });
+
+            return Ok(new { status = 1, message = "İşlem başarılı" });
+        }
     }
 }
