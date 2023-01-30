@@ -266,8 +266,8 @@ namespace Web.Controllers
             return Ok(new { status = 1, message = userOTPData.OTPCode });
         }
 
-        [HttpPost("approvenotificationrecord")]
-        public IActionResult ApproveNotificationRecord(NotificationRecordRequest model)
+        [HttpPost("notificationrecordfeedback")]
+        public IActionResult ApproveNotificationRecord(NotificationRecordResponse model)
         {
 
             if (_registerService.CheckPhoneIsExist(model.PatientPhoneNumber))
@@ -279,29 +279,11 @@ namespace Web.Controllers
             {
                 return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
             }
-
-            bool isSucceed = _notificationRecordService.ApproveNotificationRecord(model.NotificationRecordId);
-
-            if(!isSucceed)
-                return Ok(new { status = -99, message = $"Kayıt bulunamadı" });
-
-            return Ok(new { status = 1, message = "İşlem başarılı" });
-        }
-
-        [HttpPost("delaynotificationrecord")]
-        public IActionResult DelayNotificationRecord(NotificationRecordRequest model)
-        {
-            if (_registerService.CheckPhoneIsExist(model.PatientPhoneNumber))
-            {
-                return Ok(new { status = 0, message = $"Bu telefon numarası ile kayıtlı bir hesabınız bulunuyor." });
-            }
-
-            if (!_mobileHomeService.CheckKeyIsValid(model.PatientId, model.SecretKey))
-            {
-                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
-            }
-
-            bool isSucceed = _notificationRecordService.DelayNotificationRecord(model.NotificationRecordId);
+            bool isSucceed = false;
+            if (model.NotificationRecordType == Core.NotificationRecordType.Approve)
+                isSucceed = _notificationRecordService.ApproveNotificationRecord(model.NotificationRecordId);
+            if(model.NotificationRecordType == Core.NotificationRecordType.Delay)
+                isSucceed = _notificationRecordService.DelayNotificationRecord(model.NotificationRecordId);
 
             if (!isSucceed)
                 return Ok(new { status = -99, message = $"Kayıt bulunamadı" });

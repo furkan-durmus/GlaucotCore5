@@ -10,4 +10,10 @@ namespace Core
         None,
         Done
     }
+
+    public enum NotificationRecordType
+    {
+        Approve = 0,
+        Delay = 1
+    }
 }
