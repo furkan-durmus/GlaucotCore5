@@ -41,7 +41,7 @@ namespace Business.Constants
                 return false;
 
             notificationRecord.Cycle += 1;
-            notificationRecord.CreateDate = DateTime.Now;
+            notificationRecord.CreateDate = DateTime.Now; //datetime now diyince abd saatini atıyor
             _notificationRecordDal.Update(notificationRecord);
             return true;
         }

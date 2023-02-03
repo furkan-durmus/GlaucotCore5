@@ -10,7 +10,6 @@ namespace Entities.Concrete
     public class NotificationRecordResponse
     {
         public Guid PatientId { get; set; }
-        public string PatientPhoneNumber { get; set; }
         public string SecretKey { get; set; }
         public int NotificationRecordId { get; set; }
         public NotificationRecordType NotificationRecordType { get; set; } 

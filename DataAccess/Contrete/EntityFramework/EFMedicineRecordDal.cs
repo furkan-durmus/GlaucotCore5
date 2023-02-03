@@ -5,6 +5,7 @@ using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,20 +71,24 @@ namespace DataAccess.Contrete.EntityFramework
 
         public List<NotificationMedicine> GetDataForMedicineNotification(string time)
         {
+            DateTime.TryParseExact(time, "HH:mm", CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime queryTime);
+
             using (GlaucotContext context = new GlaucotContext())
             {
-                return (from medicineRecords in context.MedicineRecords
+                var myList = (from medicineRecords in context.MedicineRecords
                         join medicines in context.Medicines on medicineRecords.MedicineId equals medicines.MedicineId
                         join patients in context.Patients on medicineRecords.PatientId equals patients.PatientId
-                        where medicineRecords.MedicineUsegeTimeList.Contains(time)
                         select new NotificationMedicine
                         {
                             MedicineName = medicines.MedicineName,
                             PatientNotificationToken = patients.PatientNotificationToken,
-                            CurrentTime=time,
+                            CurrentTime= queryTime.AddHours(patients.PatientTimeDifference ?? 0).ToString("HH:mm"),
                             PatientPhoneNumber=patients.PatientPhoneNumber,
-                            PatientId = patients.PatientId
+                            PatientId = patients.PatientId,
+                            PatientMedicineTimeList = medicineRecords.MedicineUsegeTimeList,
+                            PatientTimeDifference = patients.PatientTimeDifference ?? 0
                         }).ToList();
+                return myList.Where(q => q.PatientMedicineTimeList.Contains(queryTime.AddHours(q.PatientTimeDifference).ToString("HH:mm"))).ToList();
             }
         }
     }

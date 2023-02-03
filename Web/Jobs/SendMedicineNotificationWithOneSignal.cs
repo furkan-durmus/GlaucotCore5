@@ -32,19 +32,19 @@ namespace Web.Jobs
             //DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);
             //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 11:01:05");
 
-            var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
-            DateTimeOffset localServerTime = DateTimeOffset.Now;
-            DateTimeOffset closestHalfOrFullTime = TimeZoneInfo.ConvertTime(localServerTime, info);
+            //var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
+            //DateTimeOffset localServerTime = DateTimeOffset.Now;
+            DateTime closestHalfOrFullTime = DateTime.Now; //TimeZoneInfo.ConvertTime(localServerTime, info);
 
 
-            HangfireSuccessLog startLog = new HangfireSuccessLog();
-            startLog.NotificationDate = closestHalfOrFullTime;
-            startLog.StatusDescription = "Job Başladı";
-            startLog.StatusCode ="";
-            startLog.SResponseFromServer = "";
-            startLog.PatientPhone = "";
+            //HangfireSuccessLog startLog = new HangfireSuccessLog();
+            //startLog.NotificationDate = closestHalfOrFullTime;
+            //startLog.StatusDescription = "Job Başladı";
+            //startLog.StatusCode ="";
+            //startLog.SResponseFromServer = "";
+            //startLog.PatientPhone = "";
 
-            _hangfireSuccessLogService.SaveLogToDb(startLog);
+            //_hangfireSuccessLogService.SaveLogToDb(startLog);
 
             int minuteOfTime = closestHalfOrFullTime.Minute;
             if (minuteOfTime < 15)
@@ -95,8 +95,8 @@ namespace Web.Jobs
                         });
 
                         Dictionary<string, string> notificationRecordData = new Dictionary<string, string>();
-                        headings.Add("notificationRecordId", $"{notificationRecordId}");
-                        headings.Add("patientId", $"{users.First()}");
+                        notificationRecordData.Add("notificationRecordId", $"{notificationRecordId}");
+                        notificationRecordData.Add("patientId", $"{users.First()}");
 
                         OneSignalNotification oneSignalNotification = new OneSignalNotification();
                         oneSignalNotification.app_id = "f196579d-dc71-404a-9d92-c5311836d8c1";

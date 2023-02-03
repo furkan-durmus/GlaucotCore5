@@ -12,7 +12,7 @@
         </div>
         <input type="hidden" asp-for="MedicineDefaultTimeList" value="" id="medicineDefaultTimeList" />
         <div class="card-body">
-            <input type="hidden" asp-for="MedicineId" value="@Model.MedicineId"/>
+            <input type="hidden" asp-for="MedicineId" value="@Model.MedicineId" />
             <div class="input-group my-1">
                 <label for="medicineName" class="col-sm-12 col-md-2 col-lg-2 mt-2 col-form-label" style="font-weight:bold;">Medicine Name</label>
                 <div class="form-div col-sm-12 col-md-4 col-lg-4">
@@ -110,40 +110,40 @@
 
 @section Scripts{
     <script>
-        console.log("ASDASDASDASD");
-        alert("qweqwe");
+
         $(document).ready(function () {
-            console.log("ASDASDASDASD");
+
             $(document).on('change', '#medicineImage', function (e) {
                 if ($(this).val() != null && $(this).val() != "") {
                     $('#blobImg').attr("src", URL.createObjectURL(e.target.files[0]));
                 }
                 else {
-                    $('#blobImg').attr("src", "/"+"@Model.ImagePath");
+                    $('#blobImg').attr("src", "/" + "@Model.ImagePath");
                 }
             });
 
-            //$(document).on('change keyup', '#medicineDefaultFrequency', function () {
-            $('#medicineDefaultFrequency').on('keyup change', function (e) {
-                SelectBox();
+            $(document).on('change', '#medicineDefaultFrequency', function () {
+                //$('#medicineDefaultFrequency').on('change', function (e) {
+                $('.selectedTimeListSelects').remove();
+                var total = parseInt($(this).val());   
+                SelectBox(total);
             });
 
-            function SelectBox(){
-                var selectBox = $('<select class="selectedTimeListSelects"></select>');
-                for (var y = 0; y < 24; y++)
-                {
-                    if (y < 10)
-                    {
-                        selectBox.append($('<option value="value">0'+y+':00</option>'));
-                        selectBox.append($('<option value="value">0'+y+':30</option>'));
+            function SelectBox(total) {
+                for (let i = 0; i < total; i++) {
+                    var selectBox = $('<select class="selectedTimeListSelects"></select>');
+                    for (var y = 0; y < 24; y++) {
+                        if (y < 10) {
+                            selectBox.append($('<option value="value">0' + y + ':00</option>'));
+                            selectBox.append($('<option value="value">0' + y + ':30</option>'));
+                        }
+                        else {
+                            selectBox.append($('<option value="value">' + y + ':00</option>'));
+                            selectBox.append($('<option value="value">' + y + ':30</option>'));
+                        }
                     }
-                    else
-                    {
-                        selectBox.append($('<option value="value">' + y + ':00</option>'));
-                        selectBox.append($('<option value="value">' + y + ':30</option>'));
-                    }
+                    $('#selectDivId').append(selectBox);
                 }
-                $('#selectDivId').append(selectBox);
             }
 
         });

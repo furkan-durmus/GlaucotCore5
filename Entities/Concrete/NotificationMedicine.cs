@@ -13,5 +13,7 @@ namespace Entities.Concrete
         public string PatientNotificationToken { get; set; }
         public string PatientPhoneNumber { get; set; }
         public string CurrentTime { get; set; }
+        public string PatientMedicineTimeList { get; set; }
+        public int PatientTimeDifference { get; set; }
     }
 }

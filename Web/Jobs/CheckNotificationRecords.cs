@@ -28,15 +28,15 @@ namespace Web.Jobs
 
         public void CheckNotification()
         {
-            _notificationRecordService.RemoveNotificationRecords();
+            //_notificationRecordService.RemoveNotificationRecords();  // Kayıt silme işi iptal denildi
 
             var notificationRecordList = _notificationRecordService.GetAllSendNotifications();
 
             //DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);
             //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 11:01:05");
-            var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
-            DateTimeOffset localServerTime = DateTimeOffset.Now;
-            DateTimeOffset closestHalfOrFullTime = TimeZoneInfo.ConvertTime(localServerTime, info);
+            //var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
+            //DateTime localServerTime = DateTime.Now;
+            DateTime closestHalfOrFullTime = DateTime.Now; //TimeZoneInfo.ConvertTime(localServerTime, info);
             int minuteOfTime = closestHalfOrFullTime.Minute;
             if (minuteOfTime < 15)
                 closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes(-minuteOfTime).AddSeconds(-closestHalfOrFullTime.Second);
@@ -55,12 +55,15 @@ namespace Web.Jobs
 
             _hangfireSuccessLogService.SaveLogToDb(startLog);
 
-            string myExactTime = closestHalfOrFullTime.ToString("HH:mm");
+            string myExactTime = closestHalfOrFullTime.AddMinutes(-30).ToString("HH:mm");
             List<NotificationMedicine> patientsDataForNotification = _medicineRecordService.GetDataForMedicineNotification(myExactTime);
-
+            
             foreach ( var notification in notificationRecordList)
             {
                 var patientData = patientsDataForNotification.Where(q => q.PatientId == notification.PatientId).FirstOrDefault();
+
+                if (patientData == null)
+                    continue;
 
                 var attemp = 0;
 

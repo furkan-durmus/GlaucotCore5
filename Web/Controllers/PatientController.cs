@@ -272,11 +272,6 @@ namespace Web.Controllers
         public IActionResult ApproveNotificationRecord(NotificationRecordResponse model)
         {
 
-            if (_registerService.CheckPhoneIsExist(model.PatientPhoneNumber))
-            {
-                return Ok(new { status = 0, message = $"Bu telefon numarası ile kayıtlı bir hesabınız bulunuyor." });
-            }
-
             if (!_mobileHomeService.CheckKeyIsValid(model.PatientId, model.SecretKey))
             {
                 return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
