@@ -38,7 +38,7 @@ namespace Web.Controllers
 
             HangfireSuccessLog startLog = new HangfireSuccessLog();
             startLog.NotificationDate = closestHalfOrFullTime;
-            startLog.StatusDescription = "Job Başladı..";
+            startLog.StatusDescription = "Opt-Prime 1 başlıyor";
             startLog.StatusCode = "";
             startLog.SResponseFromServer = "";
             startLog.PatientPhone = "";
@@ -171,7 +171,7 @@ namespace Web.Controllers
 
             HangfireSuccessLog startLog = new HangfireSuccessLog();
             startLog.NotificationDate = closestHalfOrFullTime;
-            startLog.StatusDescription = "NotifRecord Job Başladı";
+            startLog.StatusDescription = "Opt-Prime 3 başlıyor";
             startLog.StatusCode = "";
             startLog.SResponseFromServer = "";
             startLog.PatientPhone = "";

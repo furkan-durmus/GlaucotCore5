@@ -12,7 +12,7 @@ namespace Web.Jobs
 
         public void ClearSuccessHangifireLog()
         {
-            _hangfireSuccessLogService.ClearOldSuccessLogs(48);
+            //_hangfireSuccessLogService.ClearOldSuccessLogs(48);
         }
     }
 }
