@@ -122,9 +122,9 @@ namespace Web
             services.AddHangfire(x =>
             {
                 x.UseSqlServerStorage(SelectedDatabase.LiveServerReal);
-                RecurringJob.AddOrUpdate<SendMedicineNotificationWithOneSignal>(j => j.SendNotificationWithOneSignal(), "0,30 * * * *");
-                RecurringJob.AddOrUpdate<ClearOldDataOfSuccessHangifireLog>(j => j.ClearSuccessHangifireLog(), "1,31 * * * *");
-                RecurringJob.AddOrUpdate<CheckNotificationRecords>(j => j.CheckNotification(), "15,45 * * * *");
+                //RecurringJob.AddOrUpdate<SendMedicineNotificationWithOneSignal>(j => j.SendNotificationWithOneSignal(), "0,30 * * * *");
+                //RecurringJob.AddOrUpdate<ClearOldDataOfSuccessHangifireLog>(j => j.ClearSuccessHangifireLog(), "1,31 * * * *");
+                //RecurringJob.AddOrUpdate<CheckNotificationRecords>(j => j.CheckNotification(), "15,45 * * * *");
             });
 
             services.AddHangfireServer();

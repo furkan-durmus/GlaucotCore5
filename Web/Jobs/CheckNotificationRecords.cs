@@ -14,38 +14,24 @@ namespace Web.Jobs
 {
     public class CheckNotificationRecords
     {
-        private readonly IMedicineRecordService _medicineRecordService;
         private readonly INotificationRecordService _notificationRecordService;
         private readonly IHangfireErrorLogService _hangfireErrorLogService;
         private readonly IHangfireSuccessLogService _hangfireSuccessLogService;
-        public CheckNotificationRecords(INotificationRecordService notificationRecordService, IHangfireErrorLogService hangfireErrorLogService, IHangfireSuccessLogService hangfireSuccessLogService, IMedicineRecordService medicineRecordService)
+        private readonly IPatientService _patientService;
+        public CheckNotificationRecords(INotificationRecordService notificationRecordService, IHangfireErrorLogService hangfireErrorLogService, IHangfireSuccessLogService hangfireSuccessLogService, IPatientService patientService)
         {
             _notificationRecordService = notificationRecordService;
             _hangfireErrorLogService = hangfireErrorLogService;
             _hangfireSuccessLogService = hangfireSuccessLogService;
-            _medicineRecordService = medicineRecordService;
+            _patientService = patientService;
         }
 
         public void CheckNotification()
         {
             //_notificationRecordService.RemoveNotificationRecords();  // Kayıt silme işi iptal denildi
 
-            var notificationRecordList = _notificationRecordService.GetAllSendNotifications();
-
-            //DateTime closestHalfOrFullTime = DateTime.Now.AddHours(10);
-            //DateTime closestHalfOrFullTime = DateTime.Parse("16.12.2022 11:01:05");
-            //var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
-            //DateTime localServerTime = DateTime.Now;
             DateTime closestHalfOrFullTime = DateTime.Now; //TimeZoneInfo.ConvertTime(localServerTime, info);
-            int minuteOfTime = closestHalfOrFullTime.Minute;
-            if (minuteOfTime < 15)
-                closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes(-minuteOfTime).AddSeconds(-closestHalfOrFullTime.Second);
-            else if (minuteOfTime < 30)
-                closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes((30 - minuteOfTime)).AddSeconds(-closestHalfOrFullTime.Second);
-            else if (minuteOfTime < 45)
-                closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes(-(minuteOfTime - 30)).AddSeconds(-closestHalfOrFullTime.Second);
-            else
-                closestHalfOrFullTime = closestHalfOrFullTime.AddMinutes((60 - minuteOfTime)).AddSeconds(-closestHalfOrFullTime.Second);
+
             HangfireSuccessLog startLog = new HangfireSuccessLog();
             startLog.NotificationDate = closestHalfOrFullTime;
             startLog.StatusDescription = "NotifRecord Job Başladı";
@@ -55,16 +41,10 @@ namespace Web.Jobs
 
             _hangfireSuccessLogService.SaveLogToDb(startLog);
 
-            string myExactTime = closestHalfOrFullTime.AddMinutes(-30).ToString("HH:mm");
-            List<NotificationMedicine> patientsDataForNotification = _medicineRecordService.GetDataForMedicineNotification(myExactTime);
-            
+            var notificationRecordList = _notificationRecordService.GetAllSendNotifications();
+
             foreach ( var notification in notificationRecordList)
             {
-                var patientData = patientsDataForNotification.Where(q => q.PatientId == notification.PatientId).FirstOrDefault();
-
-                if (patientData == null)
-                    continue;
-
                 var attemp = 0;
 
                 while (attemp < 3)
@@ -78,9 +58,20 @@ namespace Web.Jobs
                         buttons.Add(new Dictionary<string, string>() { { "id", "id_confirm" }, { "text", "Onayla" }, });
                         buttons.Add(new Dictionary<string, string>() { { "id", "id_delay" }, { "text", "Ertele" }, });
 
+                        //string s = "[en, It's 13:30, time to get Parol]-[tr, Saat 13:30, Parol kullanmayı unutma.]";
+
+                        string dbContentEn = notification.Content.Substring(0, notification.Content.IndexOf("-")).Replace("[", "").Replace("]", "");
+                        string dbContentTr = notification.Content.Substring(notification.Content.IndexOf("-") + 1, notification.Content.Length - notification.Content.IndexOf("-") - 1).Replace("[", "").Replace("]", "");
+
+                        string en = dbContentEn.Substring(0, 2);
+                        string tr = dbContentTr.Substring(0, 2);
+
+                        string contentEn = dbContentEn.Substring(4, dbContentEn.Length - 4);
+                        string contentTr = dbContentTr.Substring(4, dbContentTr.Length - 4);
+
                         Dictionary<string, string> contents = new Dictionary<string, string>();
-                        contents.Add("en", $"It's {patientData.CurrentTime}, time to get {patientData.MedicineName}");
-                        contents.Add("tr", $"Saat {patientData.CurrentTime}, {patientData.MedicineName} kullanmayı unutma.");
+                        contents.Add(en, contentEn);
+                        contents.Add(tr, contentTr);
 
                         Dictionary<string, string> headings = new Dictionary<string, string>();
                         headings.Add("en", $"Glaucot Medicine Reminder");
@@ -115,14 +106,14 @@ namespace Web.Jobs
                             hangfireSuccessLog.StatusDescription = "CANLI - SUCCESS";
                             hangfireSuccessLog.StatusCode = response.StatusCode.ToString();
                             hangfireSuccessLog.SResponseFromServer = response.Content;
-                            hangfireSuccessLog.PatientPhone = patientData.PatientPhoneNumber;
+                            hangfireSuccessLog.PatientPhone = _patientService.Get(notification.PatientId).PatientPhoneNumber;
 
                             _hangfireSuccessLogService.SaveLogToDb(hangfireSuccessLog);
                         }
                         else
                         {
-                            patientsDataForNotification.Remove(patientsDataForNotification.Single(p => p.PatientPhoneNumber == patientData.PatientPhoneNumber));
-                            throw new ArgumentOutOfRangeException(response.Content, patientData.PatientPhoneNumber);
+                            notificationRecordList.Remove(notificationRecordList.Single(p => p.PatientId == notification.PatientId));
+                            throw new ArgumentOutOfRangeException(response.Content, _patientService.Get(notification.PatientId).PatientPhoneNumber);
                         }
                     }
                     catch (Exception e)
