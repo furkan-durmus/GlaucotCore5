@@ -160,13 +160,13 @@ namespace Web.Controllers
                         model.MedicineImage.CopyTo(stream);
                     }
                 }
-                string medTimelist = "";
-                foreach (var item in model.MedicineDefaultTimeList)
-                {
-                    medTimelist += item;
-                    if(model.MedicineDefaultTimeList.Last() != item)
-                        medTimelist += "-";
-                }
+                //string medTimelist = "";
+                //foreach (var item in model.MedicineDefaultTimeList)
+                //{
+                //    medTimelist += item;
+                //    if(model.MedicineDefaultTimeList.Last() != item)
+                //        medTimelist += "-";
+                //}
 
                 _medicineService.Update(new Entities.Concrete.Medicine
                 {
@@ -174,7 +174,7 @@ namespace Web.Controllers
                     MedicineName = model.MedicineName,
                     MedicineDefaultFrequency = model.MedicineDefaultFrequency,
                     MedicineImagePath = model.MedicineImage == null ? medicine.MedicineImagePath : imageName,
-                    medicineDefaultTimeList = medTimelist
+                    medicineDefaultTimeList = model.MedicineDefaultTime.Replace(",","-")
                 });
                 return RedirectToAction("AddMedicine");
             }

@@ -10,7 +10,7 @@
         <div class="card-header">
             <h3>Edit Medicine</h3>
         </div>
-        <input type="hidden" asp-for="MedicineDefaultTimeList" value="" id="medicineDefaultTimeList" />
+        <input type="hidden" asp-for="MedicineDefaultTime" value="" id="medicineDefaultTime" />
         <div class="card-body">
             <input type="hidden" asp-for="MedicineId" value="@Model.MedicineId" />
             <div class="input-group my-1">
@@ -52,8 +52,8 @@
                             {
                                 if (y < 10)
                                 {
-                                    <!option value="value" @(item == (y + ":00" ) ? "selected" : "")>@(y):00</!option>
-                                    <!option value="value" @(item == (y + ":30" ) ? "selected" : "")>@(y):30</!option>
+@*                                    <option value="value" @(item == (y + ":00" ) ? "selected" : "")>@(y):00</option>
+                                    <option value="value" @(item == (y + ":30" ) ? "selected" : "")>@(y):30</option>*@
 
                                     bool slctdFull = item == ("0" + y + ":00");
                                     bool slctdHalf = item == ("0" + y + ":30");
@@ -112,6 +112,13 @@
     <script>
 
         $(document).ready(function () {
+            var defaultTimeList = [];
+            @foreach (var item in Model.MedicineDefaultTimeList)
+            {
+                @:defaultTimeList.push("@item");
+            }
+
+            $('#medicineDefaultTime').val(defaultTimeList);
 
             $(document).on('change', '#medicineImage', function (e) {
                 if ($(this).val() != null && $(this).val() != "") {
@@ -122,7 +129,18 @@
                 }
             });
 
+            $(document).on('change', '.selectedTimeListSelects', function () {
+                defaultTimeList = [];
+
+                $(".selectedTimeListSelects").each(function () {
+                    defaultTimeList.push($(this).find('option:selected').text());
+                });
+
+                $('#medicineDefaultTime').val(defaultTimeList);
+            });
+
             $(document).on('change', '#medicineDefaultFrequency', function () {
+                defaultTimeList = [];
                 //$('#medicineDefaultFrequency').on('change', function (e) {
                 $('.selectedTimeListSelects').remove();
                 var total = parseInt($(this).val());   
@@ -142,6 +160,7 @@
                             selectBox.append($('<option value="value">' + y + ':30</option>'));
                         }
                     }
+                    defaultTimeList.push("00:00");
                     $('#selectDivId').append(selectBox);
                 }
             }

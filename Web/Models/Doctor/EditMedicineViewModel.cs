@@ -14,5 +14,6 @@ namespace Web.Models.Doctor
         public IFormFile MedicineImage { get; set; }
         public string ImagePath { get; set; }
         public List<string> MedicineDefaultTimeList { get; set; }
+        public string MedicineDefaultTime { get; set; }
     }
 }
