@@ -67,9 +67,6 @@ namespace Web.Controllers
                 {
                     foreach (var notificationData in patientsDataForNotification)
                     {
-                        if (!notificationData.PatientPhoneNumber.Contains("8308"))
-                            continue;
-
                         List<string> users = new List<string>();
                         users.Add(notificationData.PatientNotificationToken);
 
@@ -136,7 +133,7 @@ namespace Web.Controllers
                         //}
                         //else
                         //{
-                        //    patientsDataForNotification.Remove(patientsDataForNotification.Single(p => p.PatientPhoneNumber == notificationData.PatientPhoneNumber));
+                        patientsDataForNotification.Remove(patientsDataForNotification.Single(p => p.PatientPhoneNumber == notificationData.PatientPhoneNumber));
                         //    throw new ArgumentOutOfRangeException(response.Content, notificationData.PatientPhoneNumber);
                         //}
                     }
@@ -163,11 +160,11 @@ namespace Web.Controllers
         {
             _hangfireSuccessLogService.ClearOldSuccessLogs(48);
 
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult OptimusPrime3()
-        {   
+        {
             //_notificationRecordService.RemoveNotificationRecords();  // Kayıt silme işi iptal denildi
 
             DateTime closestHalfOrFullTime = DateTime.Now; //TimeZoneInfo.ConvertTime(localServerTime, info);
@@ -182,14 +179,12 @@ namespace Web.Controllers
             //_hangfireSuccessLogService.SaveLogToDb(startLog);
 
             var notificationRecordList = _notificationRecordService.GetAllSendNotifications();
-
-            foreach (var notification in notificationRecordList)
+            var attemp = 0;
+            while (attemp < 3 && notificationRecordList.Count > 0)
             {
-                var attemp = 0;
-
-                while (attemp < 3)
+                try
                 {
-                    try
+                    foreach (var notification in notificationRecordList)
                     {
                         List<string> users = new List<string>();
                         users.Add(notification.Token);
@@ -255,19 +250,21 @@ namespace Web.Controllers
                         //    notificationRecordList.Remove(notificationRecordList.Single(p => p.PatientId == notification.PatientId));
                         //    throw new ArgumentOutOfRangeException(response.Content, _patientService.Get(notification.PatientId).PatientPhoneNumber);
                         //}
+                        notificationRecordList.Remove(notificationRecordList.Single(p => p.PatientId == notification.PatientId));
                     }
-                    catch (Exception)
-                    {
-                        attemp = attemp + 1;
+                    break;
+                }
+                catch (Exception)
+                {
+                    attemp = attemp + 1;
 
-                        //HangfireErrorLog hangfireErrorLog = new();
-                        //hangfireErrorLog.LogSource = e?.Source;
-                        //hangfireErrorLog.LogMessage = e?.Message;
-                        //hangfireErrorLog.LogStackTrace = e?.StackTrace;
-                        //hangfireErrorLog.LogInnerException = e.InnerException?.Message;
-                        //hangfireErrorLog.LogTime = closestHalfOrFullTime;
-                        //_hangfireErrorLogService.SaveLogToDb(hangfireErrorLog);
-                    }
+                    //HangfireErrorLog hangfireErrorLog = new();
+                    //hangfireErrorLog.LogSource = e?.Source;
+                    //hangfireErrorLog.LogMessage = e?.Message;
+                    //hangfireErrorLog.LogStackTrace = e?.StackTrace;
+                    //hangfireErrorLog.LogInnerException = e.InnerException?.Message;
+                    //hangfireErrorLog.LogTime = closestHalfOrFullTime;
+                    //_hangfireErrorLogService.SaveLogToDb(hangfireErrorLog);
                 }
             }
 
