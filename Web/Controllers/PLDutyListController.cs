@@ -88,7 +88,7 @@ namespace Web.Controllers
 
                         int notificationRecordId = _notificationRecordService.AddNotificationRecord(new NotificationRecord
                         {
-                            Cycle = 0,
+                            Cycle = 1,
                             Status = Core.NotificationRecordStatus.None,
                             Content = string.Join("-", contentsForReminder),   
                             Title = string.Join("-", headings),  
@@ -137,7 +137,7 @@ namespace Web.Controllers
                         //}
                         //else
                         //{
-                        patientsDataForNotification.Remove(patientsDataForNotification.Single(p => p.PatientPhoneNumber == notificationData.PatientPhoneNumber));
+
                         //    throw new ArgumentOutOfRangeException(response.Content, notificationData.PatientPhoneNumber);
                         //}
                     }
@@ -190,6 +190,11 @@ namespace Web.Controllers
                 {
                     foreach (var notification in notificationRecordList)
                     {
+                        bool result = _notificationRecordService.CycleIncrease(notification.NotificationRecordId);
+
+                        if (!result)
+                            continue;
+
                         List<string> users = new List<string>();
                         users.Add(notification.Token);
 
@@ -254,7 +259,7 @@ namespace Web.Controllers
                         //    notificationRecordList.Remove(notificationRecordList.Single(p => p.PatientId == notification.PatientId));
                         //    throw new ArgumentOutOfRangeException(response.Content, _patientService.Get(notification.PatientId).PatientPhoneNumber);
                         //}
-                        notificationRecordList.Remove(notificationRecordList.Single(p => p.PatientId == notification.PatientId));
+
                     }
                     break;
                 }

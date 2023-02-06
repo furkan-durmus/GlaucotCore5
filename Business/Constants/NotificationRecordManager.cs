@@ -34,6 +34,18 @@ namespace Business.Constants
             return true;
         }
 
+        public bool CycleIncrease(int notificationRecordId)
+        {
+            var record = _notificationRecordDal.Get(q => q.NotificationRecordId == notificationRecordId);
+
+            if (record == null)
+                return false;
+
+            record.Cycle += 1;
+            _notificationRecordDal.Update(record);
+            return true;
+        }
+
         public bool DelayNotificationRecord(int notificationRecordId)
         {
             var notificationRecord = _notificationRecordDal.Get(q => q.NotificationRecordId == notificationRecordId);

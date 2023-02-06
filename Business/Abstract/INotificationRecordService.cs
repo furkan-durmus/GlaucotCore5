@@ -14,5 +14,6 @@ namespace Business.Abstract
         List<NotificationRecord> GetAllSendNotifications();
         bool ApproveNotificationRecord(int notificationRecordId);
         bool DelayNotificationRecord(int notificationRecordId);
+        bool CycleIncrease(int notificationRecordId);
     }
 }
