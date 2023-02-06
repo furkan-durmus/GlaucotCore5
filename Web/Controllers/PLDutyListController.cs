@@ -74,20 +74,24 @@ namespace Web.Controllers
                         buttons.Add(new Dictionary<string, string>() { { "id", "id_confirm" }, { "text", "Onayla" }, });
                         buttons.Add(new Dictionary<string, string>() { { "id", "id_delay" }, { "text", "Ertele" }, });
 
+                        Dictionary<string, string> headings = new Dictionary<string, string>();
+                        headings.Add("en", $"Glaucot Medicine Reminder");
+                        headings.Add("tr", $"Glaucot İlaç Hatırlatıcı");
+
                         Dictionary<string, string> contents = new Dictionary<string, string>();
                         contents.Add("en", $"It's {notificationData.CurrentTime}, time to get {notificationData.MedicineName}");
                         contents.Add("tr", $"Saat {notificationData.CurrentTime}, {notificationData.MedicineName} kullanmayı unutma.");
 
-                        Dictionary<string, string> headings = new Dictionary<string, string>();
-                        headings.Add("en", $"Glaucot Medicine Reminder");
-                        headings.Add("tr", $"Glaucot İlaç Hatırlatıcı");
+                        Dictionary<string, string> contentsForReminder = new Dictionary<string, string>();
+                        contentsForReminder.Add("en", $"REMINDER, time to get {notificationData.MedicineName}");
+                        contentsForReminder.Add("tr", $"HATIRLATICI, {notificationData.MedicineName} kullanmayı unutma.");
 
                         int notificationRecordId = _notificationRecordService.AddNotificationRecord(new NotificationRecord
                         {
                             Cycle = 0,
                             Status = Core.NotificationRecordStatus.None,
-                            Content = string.Join("-", contents),   // [en, It's qwe, time to get asd]-[tr, Saat qwe, asd kullanmayı unutma.]
-                            Title = string.Join("-", headings),   // [en, Glaucot Medicine Reminder]-[tr, Glaucot İlaç Hatırlatıcı]
+                            Content = string.Join("-", contentsForReminder),   
+                            Title = string.Join("-", headings),  
                             CreateDate = DateTime.Now,
                             PatientId = notificationData.PatientId,
                             Token = notificationData.PatientNotificationToken
