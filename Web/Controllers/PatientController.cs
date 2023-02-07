@@ -108,7 +108,7 @@ namespace Web.Controllers
             if (patient.PatientTimeDifference != null)
                 _patientService.SetPatientTimeDifference(patient.PatientId,patient.PatientTimeDifference ?? 0);
             if (patient.PatientPhoneLanguage != null)
-                _patientService.SetPatientTimeDifference(patient.PatientId,patient.PatientTimeDifference ?? 0);
+                _patientService.SetPatientPhoneLanguage(patient.PatientId,patient.PatientPhoneLanguage);
 
             return Ok(new { status = 1, message = _mobileHomeService.GetAllPatientDataForMobileHome(patient.PatientId) });
         }

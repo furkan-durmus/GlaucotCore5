@@ -36,7 +36,7 @@ namespace Web.Controllers
 
             //var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
             //DateTimeOffset localServerTime = DateTimeOffset.Now;
-            DateTime closestHalfOrFullTime = DateTime.Now.AddHours(-10);  //TimeZoneInfo.ConvertTime(localServerTime, info);
+            DateTime closestHalfOrFullTime = DateTime.Now;  //TimeZoneInfo.ConvertTime(localServerTime, info);
 
 
             //HangfireSuccessLog startLog = new HangfireSuccessLog();
@@ -200,6 +200,12 @@ namespace Web.Controllers
                         if (!result)
                             continue;
 
+                        Dictionary<string, string> notificationRecordData = new Dictionary<string, string>();
+                        notificationRecordData.Add("notificationRecordId", $"{notification.NotificationRecordId}");
+                        notificationRecordData.Add("patientId", $"{notification.PatientId}");
+
+                        var serializeRecord = JsonConvert.SerializeObject(notificationRecordData);
+
                         List<string> users = new List<string>();
                         users.Add(notification.Token);
 
@@ -214,6 +220,7 @@ namespace Web.Controllers
                         oneSignalNotification.content_available = true;
                         oneSignalNotification.android_channel_id = "9113e0b5-9b25-46c3-8abe-f56ba4827261";
                         oneSignalNotification.headings = JsonConvert.DeserializeObject(notification.Title);
+                        oneSignalNotification.data = JsonConvert.DeserializeObject(serializeRecord);
 
                         string serilizedRequestData = JsonConvert.SerializeObject(oneSignalNotification);
 
