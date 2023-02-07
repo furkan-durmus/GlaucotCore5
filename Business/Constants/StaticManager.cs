@@ -20,5 +20,10 @@ namespace Business.Constants
         {
             return _staticDal.GetAll();
         }
+
+        public Static GetStaticByName(string staticName)
+        {
+            return _staticDal.Get(s => s.StaticName == staticName);
+        }
     }
 }

@@ -14,5 +14,7 @@ namespace Entities.Concrete
         public string? PatientPassword { get; set; }
         public string? OTPCode { get; set; }
         public string SecretKey { get; set; }
+        public string PatientNotificationToken { get; set; }
+        public string PatientPhoneLanguage { get; set; }
     }
 }

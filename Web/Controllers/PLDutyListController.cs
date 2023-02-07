@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net;
 using System;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Web.Controllers
 {
@@ -17,13 +18,15 @@ namespace Web.Controllers
         INotificationRecordService _notificationRecordService;
         IHangfireErrorLogService _hangfireErrorLogService;
         IHangfireSuccessLogService _hangfireSuccessLogService;
-        public PLDutyListController(IPatientService patientService, IMedicineRecordService medicineRecordService, INotificationRecordService notificationRecordService, IHangfireErrorLogService hangfireErrorLogService, IHangfireSuccessLogService hangfireSuccessLogService)
+        IStaticService _staticService;
+        public PLDutyListController(IPatientService patientService, IMedicineRecordService medicineRecordService, INotificationRecordService notificationRecordService, IHangfireErrorLogService hangfireErrorLogService, IHangfireSuccessLogService hangfireSuccessLogService, IStaticService staticService)
         {
             _patientService = patientService;
             _medicineRecordService = medicineRecordService;
             _notificationRecordService = notificationRecordService;
             _hangfireErrorLogService = hangfireErrorLogService;
             _hangfireSuccessLogService = hangfireSuccessLogService;
+            _staticService = staticService;
         }
 
         public IActionResult OptimusPrime1()
@@ -33,7 +36,7 @@ namespace Web.Controllers
 
             //var info = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
             //DateTimeOffset localServerTime = DateTimeOffset.Now;
-            DateTime closestHalfOrFullTime = DateTime.Now; //TimeZoneInfo.ConvertTime(localServerTime, info);
+            DateTime closestHalfOrFullTime = DateTime.Now.AddHours(-10);  //TimeZoneInfo.ConvertTime(localServerTime, info);
 
 
             //HangfireSuccessLog startLog = new HangfireSuccessLog();
@@ -71,27 +74,29 @@ namespace Web.Controllers
                         users.Add(notificationData.PatientNotificationToken);
 
                         List<Dictionary<string, string>> buttons = new List<Dictionary<string, string>>();
-                        buttons.Add(new Dictionary<string, string>() { { "id", "id_confirm" }, { "text", "Onayla" }, });
-                        buttons.Add(new Dictionary<string, string>() { { "id", "id_delay" }, { "text", "Ertele" }, });
+                        buttons.Add(new Dictionary<string, string>() { { "id", "id_confirm" }, { "text", _staticService.GetStaticByName(notificationData.PatientPhoneLanguage + "_notification_button_approve").StaticValue }, });
+                        buttons.Add(new Dictionary<string, string>() { { "id", "id_delay" }, { "text", _staticService.GetStaticByName(notificationData.PatientPhoneLanguage + "_notification_button_delay").StaticValue }, });
 
                         Dictionary<string, string> headings = new Dictionary<string, string>();
-                        headings.Add("en", $"Glaucot Medicine Reminder");
-                        headings.Add("tr", $"Glaucot İlaç Hatırlatıcı");
+                        headings.Add(notificationData.PatientPhoneLanguage, $"{_staticService.GetStaticByName(notificationData.PatientPhoneLanguage + "_notification_header").StaticValue}");
 
                         Dictionary<string, string> contents = new Dictionary<string, string>();
-                        contents.Add("en", $"It's {notificationData.CurrentTime}, time to get {notificationData.MedicineName}");
-                        contents.Add("tr", $"Saat {notificationData.CurrentTime}, {notificationData.MedicineName} kullanmayı unutma.");
+                        contents.Add(notificationData.PatientPhoneLanguage, String.Format(_staticService.GetStaticByName(notificationData.PatientPhoneLanguage + "_notification_content").StaticValue, notificationData.CurrentTime, notificationData.MedicineName));
 
                         Dictionary<string, string> contentsForReminder = new Dictionary<string, string>();
-                        contentsForReminder.Add("en", $"REMINDER, time to get {notificationData.MedicineName}");
-                        contentsForReminder.Add("tr", $"HATIRLATICI, {notificationData.MedicineName} kullanmayı unutma.");
+                        contentsForReminder.Add(notificationData.PatientPhoneLanguage, String.Format(_staticService.GetStaticByName(notificationData.PatientPhoneLanguage + "_notification_reminder").StaticValue, notificationData.MedicineName));
+
+                        string reminderContent = JsonConvert.SerializeObject(contentsForReminder);
+                        string reminderHeading = JsonConvert.SerializeObject(headings);
+                        string reminderButton = JsonConvert.SerializeObject(buttons);
 
                         int notificationRecordId = _notificationRecordService.AddNotificationRecord(new NotificationRecord
                         {
                             Cycle = 1,
                             Status = Core.NotificationRecordStatus.None,
-                            Content = string.Join("-", contentsForReminder),   
-                            Title = string.Join("-", headings),  
+                            Content = reminderContent,   
+                            Title = reminderHeading,  
+                            Buttons = reminderButton,  
                             CreateDate = DateTime.Now,
                             PatientId = notificationData.PatientId,
                             Token = notificationData.PatientNotificationToken
@@ -198,40 +203,17 @@ namespace Web.Controllers
                         List<string> users = new List<string>();
                         users.Add(notification.Token);
 
-                        List<Dictionary<string, string>> buttons = new List<Dictionary<string, string>>();
-                        buttons.Add(new Dictionary<string, string>() { { "id", "id_confirm" }, { "text", "Onayla" }, });
-                        buttons.Add(new Dictionary<string, string>() { { "id", "id_delay" }, { "text", "Ertele" }, });
-
-                        //string s = "[en, It's 13:30, time to get Parol]-[tr, Saat 13:30, Parol kullanmayı unutma.]";
-
-                        string dbContentEn = notification.Content.Substring(0, notification.Content.IndexOf("-")).Replace("[", "").Replace("]", "");
-                        string dbContentTr = notification.Content.Substring(notification.Content.IndexOf("-") + 1, notification.Content.Length - notification.Content.IndexOf("-") - 1).Replace("[", "").Replace("]", "");
-
-                        string en = dbContentEn.Substring(0, 2);
-                        string tr = dbContentTr.Substring(0, 2);
-
-                        string contentEn = dbContentEn.Substring(4, dbContentEn.Length - 4);
-                        string contentTr = dbContentTr.Substring(4, dbContentTr.Length - 4);
-
-                        Dictionary<string, string> contents = new Dictionary<string, string>();
-                        contents.Add(en, contentEn);
-                        contents.Add(tr, contentTr);
-
-                        Dictionary<string, string> headings = new Dictionary<string, string>();
-                        headings.Add("en", $"Glaucot Medicine Reminder");
-                        headings.Add("tr", $"Glaucot İlaç Hatırlatıcı");
-
                         OneSignalNotification oneSignalNotification = new OneSignalNotification();
                         oneSignalNotification.app_id = "f196579d-dc71-404a-9d92-c5311836d8c1";
                         oneSignalNotification.name = "INTERNAL_CAMPAIGN_NAME";
-                        oneSignalNotification.include_player_ids = users;
-                        oneSignalNotification.buttons = buttons;
-                        oneSignalNotification.contents = contents;
+                        oneSignalNotification.include_player_ids = users; 
+                        oneSignalNotification.buttons = JsonConvert.DeserializeObject(notification.Buttons);
+                        oneSignalNotification.contents = JsonConvert.DeserializeObject(notification.Content);
                         oneSignalNotification.priority = 10;
                         oneSignalNotification.ttl = 0;
                         oneSignalNotification.content_available = true;
                         oneSignalNotification.android_channel_id = "9113e0b5-9b25-46c3-8abe-f56ba4827261";
-                        oneSignalNotification.headings = headings;
+                        oneSignalNotification.headings = JsonConvert.DeserializeObject(notification.Title);
 
                         string serilizedRequestData = JsonConvert.SerializeObject(oneSignalNotification);
 
@@ -242,6 +224,7 @@ namespace Web.Controllers
 
                         request.AddParameter("application/json", serilizedRequestData, ParameterType.RequestBody);
                         IRestResponse response = client.Execute(request);
+
 
                         //if (response.StatusCode == HttpStatusCode.OK)
                         //{

@@ -19,6 +19,7 @@ namespace Entities.Concrete
         public string PatientPassword           { get; set; }
         public string PatientPhotoPath          { get; set; }
         public string PatientNotificationToken  { get; set; }
+        public string PatientPhoneLanguage      { get; set; }
         public bool   IsUserActive              { get; set; }
         public int?   PatientTimeDifference     { get; set; }
     }

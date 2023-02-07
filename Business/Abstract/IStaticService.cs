@@ -10,5 +10,6 @@ namespace Business.Abstract
     public interface IStaticService
     {
         List<Static> GetAll();
+        Static GetStaticByName(string staticName);
     }
 }

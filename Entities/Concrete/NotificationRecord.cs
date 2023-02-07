@@ -15,6 +15,7 @@ namespace Entities.Concrete
         public string Token { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
+        public string Buttons { get; set; }
         public int Cycle { get; set; }
         public NotificationRecordStatus Status { get; set; }
         public DateTime CreateDate { get; set; }

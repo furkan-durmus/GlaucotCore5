@@ -86,7 +86,8 @@ namespace DataAccess.Contrete.EntityFramework
                             PatientPhoneNumber=patients.PatientPhoneNumber,
                             PatientId = patients.PatientId,
                             PatientMedicineTimeList = medicineRecords.MedicineUsegeTimeList,
-                            PatientTimeDifference = patients.PatientTimeDifference ?? 0
+                            PatientTimeDifference = patients.PatientTimeDifference ?? 0,
+                            PatientPhoneLanguage = patients.PatientPhoneLanguage
                         }).ToList();
                 return myList.Where(q => q.PatientMedicineTimeList.Contains(queryTime.AddHours(q.PatientTimeDifference).ToString("HH:mm"))).ToList();
             }

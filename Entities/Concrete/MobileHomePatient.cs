@@ -10,6 +10,7 @@ namespace Entities.Concrete
     {
         public Guid PatientId { get; set; }
         public string? PatientNotificationToken { get; set; }
+        public string? PatientPhoneLanguage { get; set; }
         public string SecretKey { get; set; }
         public int? PatientTimeDifference { get; set; }
     }

@@ -60,6 +60,17 @@ namespace Business.Constants
             };
         }
 
+        public void SetPatientPhoneLanguage(Guid patientId, string patientPhoneLanguage)
+        {
+            var patient = _patientDal.Get(q => q.PatientId == patientId);
+
+            if (patient != null)
+            {
+                patient.PatientPhoneLanguage = patientPhoneLanguage;
+                _patientDal.Update(patient);
+            }
+        }
+
         public void SetPatientTimeDifference(Guid patientId, int timeDifference)
         {
             var patient = _patientDal.Get(q => q.PatientId == patientId);

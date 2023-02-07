@@ -70,6 +70,9 @@ namespace Web.Controllers
             patient.PatientPassword = registerPatient.PatientPassword;
             patient.PatientPhotoPath = "profilephotos/default.png";
             patient.IsUserActive = true;
+            patient.PatientNotificationToken = registerPatient.PatientNotificationToken;
+            patient.PatientPhoneLanguage = registerPatient.PatientPhoneLanguage;
+
 
             _patientService.Add(patient);
             return Ok(new { message = patient.PatientId, status = 1 });
@@ -103,6 +106,8 @@ namespace Web.Controllers
             if (patient.PatientNotificationToken != null)
                 _mobileHomeService.UpdatePatientNotificationToken(patient);
             if (patient.PatientTimeDifference != null)
+                _patientService.SetPatientTimeDifference(patient.PatientId,patient.PatientTimeDifference ?? 0);
+            if (patient.PatientPhoneLanguage != null)
                 _patientService.SetPatientTimeDifference(patient.PatientId,patient.PatientTimeDifference ?? 0);
 
             return Ok(new { status = 1, message = _mobileHomeService.GetAllPatientDataForMobileHome(patient.PatientId) });
