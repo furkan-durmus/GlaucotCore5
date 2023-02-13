@@ -39,6 +39,11 @@ namespace Business.Constants
             return _patientDal.GetAll();
         }
 
+        public Patient GetByPhoneNumber(string phoneNumber)
+        {
+            return _patientDal.Get(q => q.PatientPhoneNumber == phoneNumber);
+        }
+
         public async Task<PagingModelResponse<Patient>> PatientsDataTable(PatientDataTablesParam model)
         {
             var datas = await _patientDal.PatientDalDataTable(model.TextSearch, model.OrderCol, model.OrderDesc, model.Start, model.Size);
@@ -58,6 +63,34 @@ namespace Business.Constants
                     PatientGender = v.PatientGender
                 }).ToList()
             };
+        }
+
+        public void SetExistencePatientAsActive(Guid patientId, RegisterPatient patientNewData)
+        {
+            var patient = _patientDal.Get(q => q.PatientId == patientId);
+
+            if (patient != null)
+            {
+                patient.IsUserActive = true;
+                patient.PatientPassword = patientNewData.PatientPassword;
+                patient.PatientName = patientNewData.PatientName;
+                patient.PatientLastName = patientNewData.PatientLastName;
+                patient.PatientPhotoPath = "profilephotos/default.png";
+                patient.PatientNotificationToken = patientNewData.PatientNotificationToken;
+                patient.PatientPhoneLanguage = patientNewData.PatientPhoneLanguage;
+                _patientDal.Update(patient);
+            }
+        }
+
+        public void SetPatientAsPassive(Guid patientId)
+        {
+            var patient = _patientDal.Get(q => q.PatientId == patientId);
+
+            if (patient != null)
+            {
+                patient.IsUserActive = false;
+                _patientDal.Update(patient);
+            }
         }
 
         public void SetPatientPhoneLanguage(Guid patientId, string patientPhoneLanguage)

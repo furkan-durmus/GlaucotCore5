@@ -26,8 +26,16 @@ namespace Business.Constants
 
                 user.PatientPassword = Convert.ToHexString(hashBytes); // .NET 5 +
             }
-
-            return _patientDal.Get(p => p.PatientPhoneNumber == user.PatientPhoneNumber && p.PatientPassword == user.PatientPassword) != null ? true : false;
+            Patient patient = _patientDal.Get(p => p.PatientPhoneNumber == user.PatientPhoneNumber && p.PatientPassword == user.PatientPassword);
+            if (patient != null && patient.IsUserActive)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+                                                                            
         }
 
 

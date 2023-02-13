@@ -11,6 +11,7 @@ namespace Business.Abstract
     {
         bool CheckKeyIsValid(RegisterPatient user);
         bool CheckPhoneIsExist(string userPhone);
+        bool CheckUserIsActive(string userPhone);
         
  
     }

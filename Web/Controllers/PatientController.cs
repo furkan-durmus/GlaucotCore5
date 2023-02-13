@@ -59,23 +59,38 @@ namespace Web.Controllers
                 registerPatient.PatientPassword = Convert.ToHexString(hashBytes); // .NET 5 +
             }
 
-            Patient patient = new();
-            patient.PatientId = new Guid();
-            patient.DoctorId = new Guid("283EF1B0-BF5B-45A4-B27D-38AF07A9E2D5");
-            patient.PatientName = registerPatient.PatientName;
-            patient.PatientLastName = registerPatient.PatientLastName;
-            patient.PatientAge = 0;
-            patient.PatientGender = 0;
-            patient.PatientPhoneNumber = registerPatient.PatientPhoneNumber;
-            patient.PatientPassword = registerPatient.PatientPassword;
-            patient.PatientPhotoPath = "profilephotos/default.png";
-            patient.IsUserActive = true;
-            patient.PatientNotificationToken = registerPatient.PatientNotificationToken;
-            patient.PatientPhoneLanguage = registerPatient.PatientPhoneLanguage;
 
 
-            _patientService.Add(patient);
-            return Ok(new { message = patient.PatientId, status = 1 });
+            if (_registerService.CheckPhoneIsExist(registerPatient.PatientPhoneNumber) && !_registerService.CheckUserIsActive(registerPatient.PatientPhoneNumber))
+            {
+                Patient existancePatient = _patientService.GetByPhoneNumber(registerPatient.PatientPhoneNumber);
+                _patientService.SetExistencePatientAsActive(existancePatient.PatientId, registerPatient);
+                return Ok(new { message = existancePatient.PatientId, status = 1 });
+            }
+            else
+            {
+                Patient patient = new();
+                patient.DoctorId = new Guid("283EF1B0-BF5B-45A4-B27D-38AF07A9E2D5");
+                patient.PatientId = new Guid();
+                patient.PatientName = registerPatient.PatientName;
+                patient.PatientLastName = registerPatient.PatientLastName;
+                patient.PatientAge = 0;
+                patient.PatientGender = 0;
+                patient.PatientPhoneNumber = registerPatient.PatientPhoneNumber;
+                patient.PatientPassword = registerPatient.PatientPassword;
+                patient.PatientPhotoPath = "profilephotos/default.png";
+                patient.IsUserActive = true;
+                patient.PatientNotificationToken = registerPatient.PatientNotificationToken;
+                patient.PatientPhoneLanguage = registerPatient.PatientPhoneLanguage;
+
+                _patientService.Add(patient);
+                return Ok(new { message = patient.PatientId, status = 1 });
+            }
+                
+
+
+           
+            
         }
 
 
@@ -138,6 +153,18 @@ namespace Web.Controllers
             }
 
             return Ok(new { status = 1, message = _medicineService.GetAll() });
+        }
+
+        [HttpPost("setuseraspassive")]
+        public IActionResult SetUserAsPassive(GeneralMobilePatientRequest patient)
+        {
+
+            if (!_mobileHomeService.CheckKeyIsValid(patient.PatientId, patient.SecretKey))
+            {
+                return Ok(new { status = -99, message = $"Yetkisiz İşlem!" });
+            }
+            _patientService.SetPatientAsPassive(patient.PatientId);
+            return Ok(new { status = 1, message = "User set as passive." });
         }
 
         [HttpPost("addmedicinerecord")]
@@ -259,7 +286,7 @@ namespace Web.Controllers
                 return Ok(new { status = -1, message = $"Too many request" });
             }
 
-            if (_registerService.CheckPhoneIsExist(registerPatient.PatientPhoneNumber))
+            if (_registerService.CheckPhoneIsExist(registerPatient.PatientPhoneNumber) && _registerService.CheckUserIsActive(registerPatient.PatientPhoneNumber))
             {
                 return Ok(new { status = 0, message = $"Bu telefon numarası ile kayıtlı bir hesabınız bulunuyor." });
             }

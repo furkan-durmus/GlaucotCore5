@@ -51,5 +51,9 @@ namespace Business.Constants
             return expectedSecretKey == user.SecretKey ? true : false;
         }
 
+        public bool CheckUserIsActive(string userPhone)
+        {
+            return _patientDal.Get(p => p.PatientPhoneNumber == userPhone)?.IsUserActive ?? true;
+        }
     }
 }
