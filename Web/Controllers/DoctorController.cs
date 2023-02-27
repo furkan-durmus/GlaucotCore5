@@ -27,7 +27,8 @@ namespace Web.Controllers
         private readonly IMedicineRecordService _medicineRecordService;
         private readonly IGlassRecordService _glassRecordService;
         private readonly IEyePressureRecordService _eyePressureRecordService;
-        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null, IPatientService patientService = null, IMedicineRecordService medicineRecordService = null, IGlassRecordService glassRecordService = null, IEyePressureRecordService eyePressureRecordService = null)
+        private readonly INotificationRecordService _notificationRecordService;
+        public DoctorController(UserManager<DoctorUser> userManager = null, IMedicineService medicineService = null, IPatientService patientService = null, IMedicineRecordService medicineRecordService = null, IGlassRecordService glassRecordService = null, IEyePressureRecordService eyePressureRecordService = null, INotificationRecordService notificationRecordService = null)
         {
             _userManager = userManager;
             _medicineService = medicineService;
@@ -35,6 +36,7 @@ namespace Web.Controllers
             _medicineRecordService = medicineRecordService;
             _glassRecordService = glassRecordService;
             _eyePressureRecordService = eyePressureRecordService;
+            _notificationRecordService = notificationRecordService;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -251,40 +253,64 @@ namespace Web.Controllers
 
         public IActionResult PatientDetail([FromQuery] Guid patient)
         {
-            if (patient == Guid.Empty)
+            try
+            {
+                if (patient == Guid.Empty)
+                    return Redirect("/");
+
+                var patientInf = _patientService.Get(patient);
+                TempData["PName"] = patientInf.PatientName;
+                TempData["PLastName"] = patientInf.PatientLastName;
+
+                var glassRecord = _glassRecordService.GetAll(patient);
+                var medicineList = _medicineRecordService.GetAll(patient);
+                var eyePressureList = _eyePressureRecordService.GetAllPatientEyePressure(patient);
+
+
+                var medicine = medicineList.Select(q => new MedicineInformation
+                {
+                    MedicineName = _medicineService.Get(q.MedicineId).MedicineName,
+                    MedicineFrequency = q.MedicineFrequency,
+                    MedicineUsegeTimeList = q.MedicineUsegeTimeList,
+                    MedicineSideEffect = q.MedicineSideEffect,
+                    MedicineRecordId = q.MedicineRecordId
+                }).ToList();
+
+                var glass = glassRecord.Where(q => !q.IsActive).Select(q => new GlassRecordInformation
+                {
+                    StartDate = q.StartDate.AddHours(10).ToString("dd-MM-yyyy HH:mm:ss"),
+                    EndDate = q.EndDate.AddHours(10).ToString("dd-MM-yyyy HH:mm:ss"),
+                    DiffDate = q.EndDate - q.StartDate
+                }).ToList();
+
+                var eyePressure = eyePressureList.Select(q => new EyePressure
+                {
+                    EyePressureDate = q.EyePressureDate.ToString("dd-MM-yyyy HH:mm:ss"),
+                    LeftEyePressure = q.LeftEyePressure,
+                    RightEyePressure = q.RightEyePressure
+                }).ToList();
+
+                return View(new PatientDetailViewModel { Medicine = medicine, GlassRecord = glass, EyePressure = eyePressure });
+            }
+            catch (Exception)
+            {
+                return Redirect("/");
+            }
+        }
+
+        public IActionResult PatientMedicineDetail(int id)
+        {
+            if (id == 0)
                 return Redirect("/");
 
-            var patientInf = _patientService.Get(patient);
-            TempData["PName"] = patientInf.PatientName;
-            TempData["PLastName"] = patientInf.PatientLastName;
+            var details = _notificationRecordService.GetByMedicineRecordId(id);
+            int medicineId = _medicineRecordService.Get(id).MedicineId;
+            var model = new PatientNotificationRecordViewModel {
+                NotificationRecordDetail = details.Select(q => new NotificationRecordDetail { Cycle = q.Cycle, Status = q.Status, CreateDate = q.CreateDate }).ToList(),
+                MedicineName = _medicineService.Get(medicineId).MedicineName
+            };
 
-            var glassRecord = _glassRecordService.GetAll(patient);
-            var medicineList = _medicineRecordService.GetAll(patient);
-            var eyePressureList = _eyePressureRecordService.GetAllPatientEyePressure(patient);
-
-            var medicine = medicineList.Select(q => new MedicineInformation
-            {
-                MedicineName = _medicineService.Get(q.MedicineId).MedicineName,
-                MedicineFrequency = q.MedicineFrequency,
-                MedicineUsegeTimeList = q.MedicineUsegeTimeList,
-                MedicineSideEffect = q.MedicineSideEffect
-            }).ToList();
-
-            var glass = glassRecord.Where(q => !q.IsActive).Select(q => new GlassRecordInformation
-            {
-                StartDate = q.StartDate.AddHours(10).ToString("dd-MM-yyyy HH:mm:ss"),
-                EndDate = q.EndDate.AddHours(10).ToString("dd-MM-yyyy HH:mm:ss"),
-                DiffDate = q.EndDate - q.StartDate
-            }).ToList();
-
-            var eyePressure = eyePressureList.Select(q => new EyePressure
-            {
-                EyePressureDate = q.EyePressureDate.ToString("dd-MM-yyyy HH:mm:ss"),
-                LeftEyePressure = q.LeftEyePressure,
-                RightEyePressure = q.RightEyePressure
-            }).ToList();
-
-            return View(new PatientDetailViewModel { Medicine = medicine, GlassRecord = glass, EyePressure = eyePressure });
+            return View(model);
         }
     }
 }

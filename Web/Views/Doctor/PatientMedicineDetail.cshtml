@@ -1,0 +1,35 @@
+﻿@model Web.Models.Doctor.PatientNotificationRecordViewModel
+@{
+    ViewData["Title"] = "PatientMedicineDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header"><h3>Patient Medicine Detail</h3></div>
+    <div class="card-body">
+        <table class="table table-bordered table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Medicine Name</th>
+                    <th>Last Update Date</th>
+                    <th>Status</th>
+                    <th>Cycle</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="@(Model.NotificationRecordDetail.Count + 1)">@Model.MedicineName</td>
+                </tr>
+                @foreach (var item in Model.NotificationRecordDetail)
+                {
+                    <tr>
+                        <td>@item.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                        <td>@item.Status</td>
+                        <td>@item.Cycle</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

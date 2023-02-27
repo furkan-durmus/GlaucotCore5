@@ -99,7 +99,8 @@ namespace Web.Controllers
                             Buttons = reminderButton,  
                             CreateDate = DateTime.Now,
                             PatientId = notificationData.PatientId,
-                            Token = notificationData.PatientNotificationToken
+                            Token = notificationData.PatientNotificationToken,
+                            MedicineRecordId = notificationData.MedicineRecordId
                         });
 
                         Dictionary<string, string> notificationRecordData = new Dictionary<string, string>();

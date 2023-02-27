@@ -11,6 +11,7 @@ namespace Entities.Concrete
     public class NotificationRecord : IEntity
     {
         public int NotificationRecordId { get; set; }
+        public int MedicineRecordId { get; set; }
         public Guid PatientId { get; set; }
         public string Token { get; set; }
         public string Title { get; set; }

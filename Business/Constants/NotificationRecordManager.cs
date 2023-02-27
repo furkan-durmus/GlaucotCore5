@@ -64,6 +64,11 @@ namespace Business.Constants
             return _notificationRecordDal.GetAll(q => q.Status == Core.NotificationRecordStatus.None && q.Cycle < 5 && q.CreateDate < DateTime.Now.AddMinutes(-6));
         }
 
+        public List<NotificationRecord> GetByMedicineRecordId(int id)
+        {
+            return _notificationRecordDal.GetAll(q => q.MedicineRecordId == id);
+        }
+
         public void RemoveNotificationRecords()
         {
             var doneNotifications = _notificationRecordDal.GetDoneNotifications();

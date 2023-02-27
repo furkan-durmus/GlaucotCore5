@@ -9,6 +9,7 @@ namespace Entities.Concrete
     public class NotificationMedicine
     {
         public Guid PatientId { get; set; }
+        public int MedicineRecordId { get; set; }
         public string MedicineName { get; set; }
         public string PatientNotificationToken { get; set; }
         public string PatientPhoneNumber { get; set; }

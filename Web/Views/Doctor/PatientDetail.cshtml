@@ -15,6 +15,7 @@
                     <th>Daily Times</th>
                     <th>Usage Time List</th>
                     <th>Side Effect</th>
+                    <th>Detail</th>
                 </tr>
             </thead>
             @foreach (var item in Model.Medicine)
@@ -24,6 +25,7 @@
                     <td>@item.MedicineFrequency</td>
                     <td>@item.MedicineUsegeTimeList</td>
                     <td>@item.MedicineSideEffect</td>
+                    <td><a class="btn btn-warning btn-sm" href="/Doctor/PatientMedicineDetail/@item.MedicineRecordId">Detail</a></td>
                 </tr>
             }
         </table>

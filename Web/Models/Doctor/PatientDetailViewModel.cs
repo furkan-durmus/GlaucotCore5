@@ -12,6 +12,7 @@ namespace Web.Models.Doctor
 
     public class MedicineInformation
     {
+        public int MedicineRecordId { get; set; }
         public string MedicineName { get; set; }
         public int MedicineFrequency { get; set; }
         public string MedicineUsegeTimeList { get; set; }
