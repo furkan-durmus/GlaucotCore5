@@ -22,7 +22,7 @@
                 </tr>
                 @foreach (var item in Model.NotificationRecordDetail)
                 {
-                    <tr>
+                    <tr class="@(item.Status == Core.NotificationRecordStatus.None ? "bg-danger" : "bg-success")">
                         <td>@item.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")</td>
                         <td>@item.Status</td>
                         <td>@item.Cycle</td>

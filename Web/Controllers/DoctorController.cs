@@ -304,9 +304,14 @@ namespace Web.Controllers
                 return Redirect("/");
 
             var details = _notificationRecordService.GetByMedicineRecordId(id);
+
+            if (details.Count == 0)
+                return Redirect("/");
+
             int medicineId = _medicineRecordService.Get(id).MedicineId;
+            int? patientTimeDifference = _patientService.Get(details.FirstOrDefault().PatientId).PatientTimeDifference;
             var model = new PatientNotificationRecordViewModel {
-                NotificationRecordDetail = details.Select(q => new NotificationRecordDetail { Cycle = q.Cycle, Status = q.Status, CreateDate = q.CreateDate }).ToList(),
+                NotificationRecordDetail = details.Select(q => new NotificationRecordDetail { Cycle = q.Cycle, Status = q.Status, CreateDate = q.CreateDate.AddHours(patientTimeDifference ?? 0) }).ToList(),
                 MedicineName = _medicineService.Get(medicineId).MedicineName
             };
 

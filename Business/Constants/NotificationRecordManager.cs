@@ -42,6 +42,7 @@ namespace Business.Constants
                 return false;
 
             record.Cycle += 1;
+            record.CreateDate = DateTime.Now;
             _notificationRecordDal.Update(record);
             return true;
         }
